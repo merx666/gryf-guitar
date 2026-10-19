@@ -19,15 +19,16 @@ import {
   Search,
   ExternalLink,
 } from 'lucide-react';
-import { NoteHit, AiTranscriptionResult, TabOnlineMatch } from '../types';
+import { NoteHit, AiTranscriptionResult, TabOnlineMatch, TourSong } from '../types';
 import { sfx } from '../audio/sfxPlayer';
 
 interface AiTabStudioViewProps {
   onBack: () => void;
   onPlaySong: (title: string, artist: string, notes: NoteHit[], bpm: number) => void;
+  initialSong?: TourSong | null;
 }
 
-export const AiTabStudioView: React.FC<AiTabStudioViewProps> = ({ onBack, onPlaySong }) => {
+export const AiTabStudioView: React.FC<AiTabStudioViewProps> = ({ onBack, onPlaySong, initialSong }) => {
   const [file, setFile] = useState<File | null>(null);
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [status, setStatus] = useState<
@@ -72,6 +73,13 @@ export const AiTabStudioView: React.FC<AiTabStudioViewProps> = ({ onBack, onPlay
       file: 'sultans-solo.mp3',
     },
   ];
+
+  // Automatyczny start analizy po przekazaniu utworu z katalogu
+  useEffect(() => {
+    if (initialSong && status === 'idle' && !analysisResult) {
+      startAnalysis(initialSong.title, initialSong.artist, initialSong.tempo);
+    }
+  }, [initialSong]);
 
   // Rozpoczęcie procesu konwersji AI
   const startAnalysis = (songTitle: string, artistName: string, bpm = 120) => {

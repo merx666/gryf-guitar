@@ -2,11 +2,21 @@ import React, { useState } from 'react';
 import { SCALES, ROOT_NOTES, getNoteAtFret } from '../data/scalesData';
 import { audio } from '../audio/audioEngine';
 import { sfx } from '../audio/sfxPlayer';
-import { ArrowLeft, Volume2, Sparkles, BookOpen } from 'lucide-react';
+import { ArrowLeft, Volume2, Sparkles, BookOpen, Layers } from 'lucide-react';
 
 interface FretboardModalProps {
   onClose: () => void;
 }
+
+// Rocksmith 6-string standard color protocol
+const STRING_COLORS: Record<number, string> = {
+  0: '#e0392b', // String 6 (Low E) - Red
+  1: '#eab308', // String 5 (A)     - Yellow
+  2: '#3b82f6', // String 4 (D)     - Blue
+  3: '#f97316', // String 3 (G)     - Orange
+  4: '#22c55e', // String 2 (B)     - Green
+  5: '#a855f7', // String 1 (High e) - Purple
+};
 
 export const FretboardModal: React.FC<FretboardModalProps> = ({ onClose }) => {
   const [selectedRoot, setSelectedRoot] = useState('A');
@@ -27,39 +37,47 @@ export const FretboardModal: React.FC<FretboardModalProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/95 backdrop-blur-xl z-50 flex flex-col p-4 sm:p-8 animate-fadeIn overflow-y-auto">
-      {/* Pasek nawigacji */}
-      <div className="flex items-center justify-between max-w-6xl w-full mx-auto pb-4 border-b border-[#2d2925]">
+    <div className="fixed inset-0 bg-[#0b0907]/95 backdrop-blur-2xl z-50 flex flex-col p-6 sm:p-10 animate-fadeIn overflow-y-auto select-none text-[#f2ead8]">
+      {/* Pasek nawigacji górnej */}
+      <div className="flex items-center justify-between max-w-6xl w-full mx-auto pb-4 border-b border-[#f2ead8]/12">
         <button
           onClick={() => {
-            sfx.play('back');
+            sfx.play('click_subtle');
             onClose();
           }}
-          className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-[#1e1b18] hover:bg-[#282420] text-zinc-300 border border-[#38332d] transition-colors cursor-pointer text-sm font-semibold"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-sm bg-[#110e0b] hover:bg-[#1a1612] text-[#f2ead8]/80 hover:text-white border border-[#f2ead8]/15 hover:border-[#e0392b] transition-all cursor-pointer font-['Barlow_Condensed'] uppercase tracking-wider text-sm font-bold shadow-md"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-4 h-4 text-[#e0392b]" />
           <span>Powrót do menu</span>
         </button>
 
         <div className="text-center">
-          <h2 className="text-xl sm:text-2xl font-bold font-['Righteous'] text-amber-400">
-            WIRTUALNY GRYF & SKALE
+          <div className="flex items-center justify-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#e2b04a] animate-pulse"></span>
+            <span className="text-[11px] font-['Barlow_Condensed'] uppercase tracking-[0.2em] font-bold text-[#e2b04a]">
+              Teoria Muzyki & Wizualizacja Gryfu
+            </span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-black font-['Big_Shoulders_Display'] uppercase tracking-wide text-[#f2ead8] mt-0.5">
+            WIRTUALNY GRYF & ATLAS SKAL
           </h2>
-          <p className="text-xs text-zinc-400">Eksploruj pozycje skal i ogrywaj dźwięki na gryfie</p>
+          <p className="text-xs text-[#f2ead8]/60 font-['Barlow']">
+            Eksploruj pozycje pentatoniki, skal modalnych i ogrywaj dźwięki w czasie rzeczywistym
+          </p>
         </div>
 
-        <div className="hidden sm:flex items-center space-x-2 text-xs text-zinc-400 bg-zinc-900 border border-zinc-800 px-3 py-1.5 rounded-lg">
-          <BookOpen className="w-3.5 h-3.5 text-amber-400" />
-          <span>Kliknij dźwięk, aby go usłyszeć</span>
+        <div className="hidden sm:flex items-center gap-2 text-xs font-['Barlow_Condensed'] uppercase tracking-wider font-bold text-[#e2b04a] bg-[#1a1612] border border-[#e2b04a]/30 px-3 py-1.5 rounded-sm">
+          <BookOpen className="w-3.5 h-3.5 text-[#e2b04a]" />
+          <span>Kliknij dźwięk, by usłyszeć</span>
         </div>
       </div>
 
       <div className="max-w-6xl w-full mx-auto flex flex-col space-y-6 my-auto py-6">
         {/* Panel sterowania: Wybór prymy i skali */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-[#141210] p-4 rounded-2xl border border-[#26231f]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-[#110e0b] p-5 rounded-sm border border-[#f2ead8]/12 shadow-2xl">
           {/* Wybór dźwięku podstawowego (Prymy) */}
           <div>
-            <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider block mb-2">
+            <label className="text-xs font-bold font-['Barlow_Condensed'] uppercase tracking-wider text-[#e2b04a] block mb-2">
               Dźwięk podstawowy (Pryma / Root):
             </label>
             <div className="flex flex-wrap gap-1.5">
@@ -70,10 +88,10 @@ export const FretboardModal: React.FC<FretboardModalProps> = ({ onClose }) => {
                     sfx.play('select');
                     setSelectedRoot(note);
                   }}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-sm text-xs font-['Barlow_Condensed'] uppercase tracking-wider font-black transition-all cursor-pointer ${
                     selectedRoot === note
-                      ? 'bg-amber-500 text-black shadow-md shadow-amber-500/20 scale-105'
-                      : 'bg-[#1e1b18] hover:bg-[#2a2622] text-zinc-300 border border-[#332f2a]'
+                      ? 'bg-[#e2b04a] text-[#0b0907] shadow-[0_0_15px_rgba(226,176,74,0.4)] scale-105'
+                      : 'bg-[#181410] hover:bg-[#241e18] text-[#f2ead8]/80 border border-[#f2ead8]/15 hover:border-[#f2ead8]/40'
                   }`}
                 >
                   {note}
@@ -84,7 +102,7 @@ export const FretboardModal: React.FC<FretboardModalProps> = ({ onClose }) => {
 
           {/* Wybór rodzaju skali */}
           <div>
-            <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider block mb-2">
+            <label className="text-xs font-bold font-['Barlow_Condensed'] uppercase tracking-wider text-[#e2b04a] block mb-2">
               Typ skali gitarowej:
             </label>
             <div className="grid grid-cols-2 gap-1.5">
@@ -95,10 +113,10 @@ export const FretboardModal: React.FC<FretboardModalProps> = ({ onClose }) => {
                     sfx.play('select');
                     setSelectedScaleId(scale.id);
                   }}
-                  className={`px-3 py-2 rounded-lg text-xs font-semibold text-left transition-all cursor-pointer truncate ${
+                  className={`px-3 py-2 rounded-sm text-xs font-['Barlow_Condensed'] uppercase tracking-wider font-bold text-left transition-all cursor-pointer truncate ${
                     selectedScaleId === scale.id
-                      ? 'bg-amber-500 text-black shadow-md shadow-amber-500/20'
-                      : 'bg-[#1e1b18] hover:bg-[#2a2622] text-zinc-300 border border-[#332f2a]'
+                      ? 'bg-[#e0392b] text-white shadow-[0_0_15px_rgba(224,57,43,0.4)]'
+                      : 'bg-[#181410] hover:bg-[#241e18] text-[#f2ead8]/80 border border-[#f2ead8]/15 hover:border-[#f2ead8]/40'
                   }`}
                 >
                   {scale.name}
@@ -109,29 +127,33 @@ export const FretboardModal: React.FC<FretboardModalProps> = ({ onClose }) => {
         </div>
 
         {/* Opis skali */}
-        <div className="bg-[#181613] px-4 py-3 rounded-xl border border-[#2b2722] flex items-center justify-between text-xs">
+        <div className="bg-[#14100c] px-5 py-3 rounded-sm border border-[#f2ead8]/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
           <div>
-            <span className="font-bold text-amber-400">{selectedRoot} {currentScale.name}: </span>
-            <span className="text-zinc-300">{currentScale.description}</span>
+            <span className="font-black font-['Big_Shoulders_Display'] uppercase text-base text-[#e2b04a]">
+              {selectedRoot} {currentScale.name}:{' '}
+            </span>
+            <span className="text-[#f2ead8]/80 font-['Barlow']">{currentScale.description}</span>
           </div>
-          <div className="flex items-center space-x-3 ml-4 shrink-0 font-mono text-[11px]">
-            <div className="flex items-center space-x-1">
-              <span className="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
-              <span className="text-zinc-300">Pryma (Root)</span>
+          <div className="flex items-center gap-4 shrink-0 font-['Barlow_Condensed'] uppercase tracking-wider font-bold text-[11px]">
+            <div className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-full bg-[#e2b04a] inline-block shadow-[0_0_8px_#e2b04a]"></span>
+              <span className="text-[#f2ead8]">Pryma (Root)</span>
             </div>
-            <div className="flex items-center space-x-1">
-              <span className="w-3 h-3 rounded-full bg-cyan-500 inline-block"></span>
-              <span className="text-zinc-300">Dźwięk skali</span>
+            <div className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-full bg-[#38bdf8] inline-block shadow-[0_0_8px_#38bdf8]"></span>
+              <span className="text-[#f2ead8]">Dźwięk skali</span>
             </div>
           </div>
         </div>
 
-        {/* Gryf gitarowy (Fretboard) */}
-        <div className="w-full bg-[#1e1712] rounded-2xl border-4 border-[#33271d] shadow-2xl overflow-x-auto p-4 select-none">
-          <div className="min-w-[860px]">
+        {/* Gryf gitarowy (Hebanowy Fretboard z teksturą i inlays) */}
+        <div className="w-full bg-[#120e0a] rounded-sm border-2 border-[#f2ead8]/15 shadow-2xl overflow-x-auto p-5 select-none relative">
+          <div className="min-w-[920px]">
             {/* Numery progów */}
-            <div className="grid grid-cols-[60px_repeat(15,1fr)] text-center text-xs font-mono text-zinc-400 pb-2">
-              <div className="text-[10px] text-zinc-400">Pusta</div>
+            <div className="grid grid-cols-[60px_repeat(15,1fr)] text-center text-xs font-mono text-[#f2ead8]/60 pb-3 border-b border-[#f2ead8]/10">
+              <div className="text-[11px] font-['Barlow_Condensed'] uppercase tracking-wider text-[#e2b04a] font-bold">
+                Pusta
+              </div>
               {Array.from({ length: fretCount }).map((_, idx) => (
                 <div key={idx} className="font-bold">
                   {idx + 1}
@@ -140,16 +162,21 @@ export const FretboardModal: React.FC<FretboardModalProps> = ({ onClose }) => {
             </div>
 
             {/* 6 strun (od e4 do E2) */}
-            <div className="space-y-3 relative py-2">
+            <div className="space-y-4 relative py-3">
               {[5, 4, 3, 2, 1, 0].map((stringIdx) => {
-                const stringNames = ['6 (E)', '5 (A)', '4 (D)', '3 (G)', '2 (B)', '1 (e)'];
-                const stringGauges = ['h-1.5', 'h-1.5', 'h-1', 'h-1', 'h-0.5', 'h-0.5'];
+                const strColor = STRING_COLORS[stringIdx] || '#e0392b';
+                const stringGauges = ['h-[3px]', 'h-[2.5px]', 'h-[2px]', 'h-[1.5px]', 'h-[1px]', 'h-[1px]'];
 
                 return (
                   <div key={stringIdx} className="relative flex items-center grid grid-cols-[60px_repeat(15,1fr)]">
-                    {/* Metalowa struna przechodząca przez całą długość */}
+                    {/* Metalowa struna z kolorowym glow Rocksmith */}
                     <div
-                      className={`absolute left-[60px] right-0 bg-gradient-to-b from-zinc-300 to-zinc-500 shadow-sm ${stringGauges[stringIdx]} pointer-events-none z-0`}
+                      className={`absolute left-[60px] right-0 ${stringGauges[stringIdx]} pointer-events-none z-0`}
+                      style={{
+                        backgroundColor: strColor,
+                        boxShadow: `0 0 6px ${strColor}80`,
+                        opacity: 0.85,
+                      }}
                     ></div>
 
                     {/* Próg zerowy (Otwarta struna) */}
@@ -163,12 +190,12 @@ export const FretboardModal: React.FC<FretboardModalProps> = ({ onClose }) => {
                         return (
                           <button
                             onClick={() => handlePlayNote(stringIdx, 0)}
-                            className={`w-9 h-7 rounded-md font-bold text-xs flex items-center justify-center transition-transform hover:scale-110 cursor-pointer ${
+                            className={`w-9 h-7 rounded-sm font-['Big_Shoulders_Display'] font-black text-sm flex items-center justify-center transition-transform hover:scale-110 cursor-pointer ${
                               isRoot
-                                ? 'bg-amber-500 text-black font-black ring-2 ring-amber-300 shadow-md shadow-amber-500/30'
+                                ? 'bg-[#e2b04a] text-[#0b0907] ring-2 ring-[#e2b04a] shadow-[0_0_12px_rgba(226,176,74,0.6)]'
                                 : inScale
-                                ? 'bg-cyan-500 text-black font-black shadow-md shadow-cyan-500/20'
-                                : 'bg-[#151311] text-zinc-400 border border-[#2a2622] hover:bg-zinc-800'
+                                ? 'bg-[#38bdf8] text-[#0b0907] shadow-[0_0_10px_rgba(56,189,248,0.5)]'
+                                : 'bg-[#181410] text-[#f2ead8]/50 border border-[#f2ead8]/12 hover:bg-zinc-800'
                             }`}
                           >
                             {note}
@@ -177,7 +204,7 @@ export const FretboardModal: React.FC<FretboardModalProps> = ({ onClose }) => {
                       })()}
                     </div>
 
-                    {/* Progi od 1 do 15 */}
+                    {/* Progi od 1 do 15 z metalowymi progami */}
                     {Array.from({ length: fretCount }).map((_, fIdx) => {
                       const fret = fIdx + 1;
                       const { note } = getNoteAtFret(stringIdx, fret);
@@ -188,15 +215,15 @@ export const FretboardModal: React.FC<FretboardModalProps> = ({ onClose }) => {
                       return (
                         <div
                           key={fret}
-                          className="h-9 flex items-center justify-center border-r-2 border-[#544335] relative z-10"
+                          className="h-9 flex items-center justify-center border-r-2 border-[#4a3f33] relative z-10"
                         >
                           {inScale && (
                             <button
                               onClick={() => handlePlayNote(stringIdx, fret)}
-                              className={`w-7 h-7 rounded-full text-[11px] font-black flex items-center justify-center transition-all hover:scale-125 cursor-pointer shadow-lg ${
+                              className={`w-7 h-7 rounded-full text-xs font-['Big_Shoulders_Display'] font-black flex items-center justify-center transition-all hover:scale-125 cursor-pointer shadow-lg ${
                                 isRoot
-                                  ? 'bg-amber-400 text-black ring-2 ring-amber-200 shadow-amber-400/50 scale-105'
-                                  : 'bg-cyan-400 text-black shadow-cyan-400/40'
+                                  ? 'bg-[#e2b04a] text-[#0b0907] ring-2 ring-white shadow-[0_0_15px_#e2b04a] scale-105'
+                                  : 'bg-[#38bdf8] text-[#0b0907] shadow-[0_0_10px_#38bdf8]'
                               }`}
                             >
                               {note}
@@ -210,8 +237,8 @@ export const FretboardModal: React.FC<FretboardModalProps> = ({ onClose }) => {
               })}
             </div>
 
-            {/* Znaczniki progów (Markery kropkowe: 3, 5, 7, 9, 12-podwójna, 15) */}
-            <div className="grid grid-cols-[60px_repeat(15,1fr)] text-center pt-3">
+            {/* Znaczniki progów (Markery diamentowe/perłowe: 3, 5, 7, 9, 12-podwójna, 15) */}
+            <div className="grid grid-cols-[60px_repeat(15,1fr)] text-center pt-3 border-t border-[#f2ead8]/10">
               <div></div>
               {Array.from({ length: fretCount }).map((_, idx) => {
                 const fret = idx + 1;
@@ -220,11 +247,13 @@ export const FretboardModal: React.FC<FretboardModalProps> = ({ onClose }) => {
 
                 return (
                   <div key={idx} className="flex justify-center items-center">
-                    {isSingleDot && <span className="w-2.5 h-2.5 rounded-full bg-[#7a6453]"></span>}
+                    {isSingleDot && (
+                      <span className="w-2.5 h-2.5 rotate-45 bg-[#f2ead8]/40 border border-[#f2ead8]/60 inline-block shadow-sm"></span>
+                    )}
                     {isDoubleDot && (
-                      <span className="flex space-x-1">
-                        <span className="w-2 h-2 rounded-full bg-[#7a6453]"></span>
-                        <span className="w-2 h-2 rounded-full bg-[#7a6453]"></span>
+                      <span className="flex space-x-1.5">
+                        <span className="w-2 h-2 rotate-45 bg-[#e2b04a] border border-white inline-block shadow-[0_0_6px_#e2b04a]"></span>
+                        <span className="w-2 h-2 rotate-45 bg-[#e2b04a] border border-white inline-block shadow-[0_0_6px_#e2b04a]"></span>
                       </span>
                     )}
                   </div>

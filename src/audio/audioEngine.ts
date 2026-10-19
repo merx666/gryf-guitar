@@ -146,6 +146,15 @@ export class AudioEngine {
     return this.pitchDetector.detect();
   }
 
+  public getTimeDomainData(): Uint8Array {
+    if (!this.analyserNode) {
+      return new Uint8Array(128).fill(128);
+    }
+    const data = new Uint8Array(128);
+    this.analyserNode.getByteTimeDomainData(data);
+    return data;
+  }
+
   public playSyntheticNote(stringIndex: number, fret: number, durationSec = 1.0) {
     if (!this.guitarNode) return;
     const midi = [40, 45, 50, 55, 59, 64][stringIndex] + fret;

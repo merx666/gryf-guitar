@@ -37,6 +37,7 @@ export const App: React.FC = () => {
   // Wybrana piosenka do gry
   const [selectedSong, setSelectedSong] = useState<TourSong | null>(null);
   const [customSongNotes, setCustomSongNotes] = useState<NoteHit[] | null>(null);
+  const [aiStudioTargetSong, setAiStudioTargetSong] = useState<TourSong | null>(null);
 
   // Progresja gracza (zapisywana w localStorage)
   const [playerRank, setPlayerRank] = useState<PlayerRank>(() => {
@@ -239,6 +240,10 @@ export const App: React.FC = () => {
             onBack={() => setCurrentScreen('menu')}
             onSelectSong={handleSelectSong}
             onOpenImport={() => setIsImportOpen(true)}
+            onOpenAiStudio={(song) => {
+              setAiStudioTargetSong(song);
+              setCurrentScreen('aistudio');
+            }}
             earnedStars={earnedStars}
           />
         )}
@@ -257,7 +262,11 @@ export const App: React.FC = () => {
 
         {currentScreen === 'aistudio' && (
           <AiTabStudioView
-            onBack={() => setCurrentScreen('menu')}
+            initialSong={aiStudioTargetSong}
+            onBack={() => {
+              setAiStudioTargetSong(null);
+              setCurrentScreen('menu');
+            }}
             onPlaySong={(title, artist, notes, bpm) => {
               setSelectedSong({
                 id: 'ai-' + Date.now(),
