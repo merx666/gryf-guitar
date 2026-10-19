@@ -1,0 +1,13 @@
+services:
+  gryf:
+    build: .
+    image: gryf-guitar:latest
+    container_name: gryf-app
+    restart: always
+    ports:
+      - "3000:80"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

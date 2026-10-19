@@ -1,0 +1,32 @@
+name: Budowa i Wdrożenie Gryf
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pobranie repozytorium
+        uses: actions/checkout@v4
+
+      - name: Konfiguracja Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Instalacja zależności
+        run: npm ci
+
+      - name: Weryfikacja typów TypeScript i budowanie
+        run: npm run build
+
+      - name: Weryfikacja obecności workerów DSP
+        run: |
+          test -f dist/workers/guitarWorklet.js || exit 1
+          test -f dist/workers/sfxWorker.js || exit 1
+          echo "Wszystkie moduły DSP i workery obecne w dist!"
