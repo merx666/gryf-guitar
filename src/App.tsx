@@ -12,6 +12,7 @@ import { SongsView } from './components/SongsView';
 import { GearView } from './components/GearView';
 import { ProfileView } from './components/ProfileView';
 import { HighwayView } from './components/HighwayView';
+import { AiTabStudioView } from './components/AiTabStudioView';
 
 // Modale narzędziowe
 import { TunerModal } from './components/TunerModal';
@@ -251,6 +252,33 @@ export const App: React.FC = () => {
             onBack={() => setCurrentScreen('menu')}
             playerRank={playerRank}
             unlockedBadgeIds={unlockedBadgeIds}
+          />
+        )}
+
+        {currentScreen === 'aistudio' && (
+          <AiTabStudioView
+            onBack={() => setCurrentScreen('menu')}
+            onPlaySong={(title, artist, notes, bpm) => {
+              setSelectedSong({
+                id: 'ai-' + Date.now(),
+                chapter: 1,
+                order: 999,
+                title,
+                artist,
+                genre: 'AI Stem Audio-to-Tab',
+                year: 2026,
+                about: 'Utwór wygenerowany i zsynchronizowany przez model AI Demucs v4.',
+                tempo: bpm,
+                tuning: 'Standard E',
+                teaches: ['Izolacja AI'],
+                uses: ['Tabulatura'],
+                notesCount: notes.length,
+                durationMs: 180000,
+                file: 'ai.json',
+              });
+              setCustomSongNotes(notes);
+              setCurrentScreen('play');
+            }}
           />
         )}
 

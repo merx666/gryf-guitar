@@ -10,7 +10,8 @@ export type ScreenName =
   | 'tuner'
   | 'fretboard'
   | 'calibration'
-  | 'recorder';
+  | 'recorder'
+  | 'aistudio';
 
 export interface NoteHit {
   string: number; // 0-5 (0 = niska E, 5 = wysoka e)
@@ -98,4 +99,27 @@ export interface PitchDetectionResult {
   cents: number; // odchyłka od -50 do +50
   clarity: number; // 0 do 1
   stringEstimated?: number;
+}
+
+export interface TabOnlineMatch {
+  source: 'Songsterr' | 'Ultimate Guitar' | 'Guitar Pro Community';
+  version: string;
+  accuracy: number;
+  tracks: string[];
+  syncConfidence: number;
+}
+
+export interface AiTranscriptionResult {
+  id: string;
+  title: string;
+  artist: string;
+  bpm: number;
+  tuning: string;
+  audioFileName: string;
+  stemsAvailable: boolean;
+  onlineMatchFound: boolean;
+  onlineMatch?: TabOnlineMatch;
+  notes: NoteHit[];
+  syncPointsCount: number;
+  durationSec: number;
 }
