@@ -1,0 +1,337 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <!-- Lighting and Glow Filters -->
+    <filter id="og-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="8" result="blur1" />
+      <feGaussianBlur stdDeviation="3" result="blur2" />
+      <feMerge>
+        <feMergeNode in="blur1" />
+        <feMergeNode in="blur2" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <filter id="og-window-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="-10" dy="24" stdDeviation="28" flood-color="#000000" flood-opacity="0.95" />
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#e0392b" flood-opacity="0.25" />
+    </filter>
+
+    <filter id="text-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000000" flood-opacity="0.9" />
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#e2b04a" flood-opacity="0.4" />
+    </filter>
+
+    <!-- Gradients -->
+    <radialGradient id="og-bg-radial" cx="30%" cy="40%" r="75%">
+      <stop offset="0%" stop-color="#18120d" />
+      <stop offset="45%" stop-color="#0e0b08" />
+      <stop offset="100%" stop-color="#050403" />
+    </radialGradient>
+
+    <radialGradient id="left-spotlight" cx="15%" cy="20%" r="55%">
+      <stop offset="0%" stop-color="#e0392b" stop-opacity="0.25" />
+      <stop offset="60%" stop-color="#e0392b" stop-opacity="0.04" />
+      <stop offset="100%" stop-color="#0b0907" stop-opacity="0" />
+    </radialGradient>
+
+    <radialGradient id="right-spotlight" cx="85%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.2" />
+      <stop offset="50%" stop-color="#e2b04a" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#0b0907" stop-opacity="0" />
+    </radialGradient>
+
+    <linearGradient id="og-gold-text" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="35%" stop-color="#fdf4dc" />
+      <stop offset="70%" stop-color="#e2b04a" />
+      <stop offset="100%" stop-color="#a16207" />
+    </linearGradient>
+
+    <linearGradient id="window-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e2b04a" />
+      <stop offset="40%" stop-color="#38bdf8" />
+      <stop offset="80%" stop-color="#e0392b" />
+      <stop offset="100%" stop-color="#241e18" />
+    </linearGradient>
+
+    <!-- Clip path for preview highway mockup -->
+    <clipPath id="highway-mockup-clip">
+      <rect x="0" y="32" width="600" height="428" rx="0" />
+    </clipPath>
+  </defs>
+
+  <!-- 1. Background Surface -->
+  <rect width="1200" height="630" fill="url(#og-bg-radial)" />
+  <rect width="1200" height="630" fill="url(#left-spotlight)" />
+  <rect width="1200" height="630" fill="url(#right-spotlight)" />
+
+  <!-- Background decorative stage grid -->
+  <g stroke="#f2ead8" stroke-opacity="0.06" stroke-width="1">
+    <line x1="0" y1="100" x2="1200" y2="100" />
+    <line x1="0" y1="200" x2="1200" y2="200" />
+    <line x1="0" y1="300" x2="1200" y2="300" />
+    <line x1="0" y1="400" x2="1200" y2="400" />
+    <line x1="0" y1="500" x2="1200" y2="500" />
+    <line x1="200" y1="0" x2="200" y2="630" />
+    <line x1="400" y1="0" x2="400" y2="630" />
+    <line x1="600" y1="0" x2="600" y2="630" />
+    <line x1="800" y1="0" x2="800" y2="630" />
+    <line x1="1000" y1="0" x2="1000" y2="630" />
+  </g>
+
+  <!-- ==================== LEFT COLUMN: BRANDING & VALUE PROP ==================== -->
+  <g transform="translate(70, 75)">
+    <!-- Small Category Pill -->
+    <g>
+      <rect x="0" y="0" width="220" height="28" rx="6" fill="#e0392b" fill-opacity="0.16" stroke="#e0392b" stroke-width="1.4" />
+      <circle cx="16" cy="14" r="4" fill="#e0392b" filter="url(#og-glow)" />
+      <text x="28" y="19" font-family="'Barlow Condensed', 'Oswald', sans-serif" font-size="13" font-weight="900" fill="#e0392b" letter-spacing="0.18em">
+        OPEN ROCKSMITH+ FOR WEB
+      </text>
+    </g>
+
+    <!-- Master Logo Brand Lockup -->
+    <g transform="translate(0, 42)">
+      <!-- Mini Pick Icon (48x48) -->
+      <g transform="translate(0, 10)">
+        <path
+          d="M 24,2 C 34,2 42,6 42,16 C 42,26 34,35 25,43 C 24.5,43.5 23.5,43.5 23,43 C 14,35 6,26 6,16 C 6,6 14,2 24,2 Z"
+          fill="#16110d"
+          stroke="#e2b04a"
+          stroke-width="2"
+        />
+        <!-- 6 Mini string dots inside -->
+        <circle cx="16" cy="16" r="1.5" fill="#e0392b" />
+        <circle cx="19" cy="16" r="1.5" fill="#eab308" />
+        <circle cx="22" cy="16" r="1.5" fill="#38bdf8" />
+        <circle cx="25" cy="16" r="1.5" fill="#f97316" />
+        <circle cx="28" cy="16" r="1.5" fill="#22c55e" />
+        <circle cx="31" cy="16" r="1.5" fill="#a855f7" />
+        <!-- Lightning cut -->
+        <polyline points="22,6 26,18 20,20 25,32" stroke="#38bdf8" stroke-width="1.4" fill="none" />
+      </g>
+
+      <!-- Typographic "GRYF" -->
+      <text
+        x="60"
+        y="58"
+        font-family="'Big Shoulders Display', 'Oswald', sans-serif"
+        font-size="72"
+        font-weight="900"
+        fill="url(#og-gold-text)"
+        letter-spacing="0.06em"
+        filter="url(#text-glow)"
+      >
+        GRYF
+      </text>
+    </g>
+
+    <!-- Punchy Tagline -->
+    <g transform="translate(0, 140)">
+      <text
+        x="0"
+        y="30"
+        font-family="'Big Shoulders Display', 'Oswald', sans-serif"
+        font-size="34"
+        font-weight="900"
+        fill="#f2ead8"
+        letter-spacing="0.02em"
+      >
+        Play real guitar in any browser.
+      </text>
+      <text
+        x="0"
+        y="68"
+        font-family="'Big Shoulders Display', 'Oswald', sans-serif"
+        font-size="34"
+        font-weight="900"
+        fill="#e2b04a"
+        letter-spacing="0.02em"
+      >
+        Zero lag. AI Stems &amp; Tabs.
+      </text>
+    </g>
+
+    <!-- Key Bullet Differentiators -->
+    <g transform="translate(0, 240)">
+      <!-- Item 1 -->
+      <g transform="translate(0, 0)">
+        <circle cx="12" cy="12" r="10" fill="#e0392b" fill-opacity="0.2" stroke="#e0392b" stroke-width="1.2" />
+        <path d="M 8,12 L 11,15 L 16,9" stroke="#e0392b" stroke-width="2" fill="none" stroke-linecap="round" />
+        <text x="32" y="16" font-family="'Barlow', system-ui, sans-serif" font-size="15" font-weight="600" fill="#f2ead8">
+          <tspan font-weight="700" fill="#ffffff">Real-time AudioWorklet DSP</tspan> — sub-5ms latency
+        </text>
+      </g>
+
+      <!-- Item 2 -->
+      <g transform="translate(0, 34)">
+        <circle cx="12" cy="12" r="10" fill="#38bdf8" fill-opacity="0.2" stroke="#38bdf8" stroke-width="1.2" />
+        <path d="M 8,12 L 11,15 L 16,9" stroke="#38bdf8" stroke-width="2" fill="none" stroke-linecap="round" />
+        <text x="32" y="16" font-family="'Barlow', system-ui, sans-serif" font-size="15" font-weight="600" fill="#f2ead8">
+          <tspan font-weight="700" fill="#ffffff">3D Note Highway (60/120 FPS)</tspan> with Rocksmith colors
+        </text>
+      </g>
+
+      <!-- Item 3 -->
+      <g transform="translate(0, 68)">
+        <circle cx="12" cy="12" r="10" fill="#58c46c" fill-opacity="0.2" stroke="#58c46c" stroke-width="1.2" />
+        <path d="M 8,12 L 11,15 L 16,9" stroke="#58c46c" stroke-width="2" fill="none" stroke-linecap="round" />
+        <text x="32" y="16" font-family="'Barlow', system-ui, sans-serif" font-size="15" font-weight="600" fill="#f2ead8">
+          <tspan font-weight="700" fill="#ffffff">AI Demucs v4</tspan> audio-to-tab &amp; stem separation
+        </text>
+      </g>
+
+      <!-- Item 4 -->
+      <g transform="translate(0, 102)">
+        <circle cx="12" cy="12" r="10" fill="#e2b04a" fill-opacity="0.2" stroke="#e2b04a" stroke-width="1.2" />
+        <path d="M 8,12 L 11,15 L 16,9" stroke="#e2b04a" stroke-width="2" fill="none" stroke-linecap="round" />
+        <text x="32" y="16" font-family="'Barlow', system-ui, sans-serif" font-size="15" font-weight="600" fill="#f2ead8">
+          <tspan font-weight="700" fill="#ffffff">100% Free &amp; Open Source</tspan> — no cable required
+        </text>
+      </g>
+    </g>
+
+    <!-- Bottom Tech Specs Pill Badges -->
+    <g transform="translate(0, 395)">
+      <!-- Pill 1 -->
+      <rect x="0" y="0" width="105" height="26" rx="5" fill="#14110e" stroke="#f2ead8" stroke-opacity="0.2" stroke-width="1" />
+      <text x="52" y="17" font-family="'Barlow Condensed', sans-serif" font-size="12" font-weight="800" fill="#f2ead8" text-anchor="middle">⚡ WEBGPU</text>
+
+      <!-- Pill 2 -->
+      <rect x="115" y="0" width="115" height="26" rx="5" fill="#14110e" stroke="#f2ead8" stroke-opacity="0.2" stroke-width="1" />
+      <text x="172" y="17" font-family="'Barlow Condensed', sans-serif" font-size="12" font-weight="800" fill="#f2ead8" text-anchor="middle">🎸 GUITAR PRO 8</text>
+
+      <!-- Pill 3 -->
+      <rect x="240" y="0" width="105" height="26" rx="5" fill="#14110e" stroke="#f2ead8" stroke-opacity="0.2" stroke-width="1" />
+      <text x="292" y="17" font-family="'Barlow Condensed', sans-serif" font-size="12" font-weight="800" fill="#f2ead8" text-anchor="middle">🔥 REACT 19</text>
+
+      <!-- Pill 4 -->
+      <rect x="355" y="0" width="105" height="26" rx="5" fill="#14110e" stroke="#f2ead8" stroke-opacity="0.2" stroke-width="1" />
+      <text x="407" y="17" font-family="'Barlow Condensed', sans-serif" font-size="12" font-weight="800" fill="#f2ead8" text-anchor="middle">MIT LICENSE</text>
+    </g>
+  </g>
+
+  <!-- ==================== RIGHT COLUMN: 3D HIGHWAY UI MOCKUP ==================== -->
+  <g transform="translate(560, 80)" filter="url(#og-window-shadow)">
+    <!-- DAW / App Window Frame -->
+    <rect x="0" y="0" width="580" height="460" rx="10" fill="#110e0b" stroke="url(#window-rim)" stroke-width="2" />
+
+    <!-- Window Title Bar -->
+    <path d="M 0,0 L 580,0 C 580,0 580,32 580,32 L 0,32 Z" fill="#1a1410" />
+    <line x1="0" y1="32" x2="580" y2="32" stroke="#241e18" stroke-width="1.2" />
+
+    <!-- Mac Window Traffic Lights -->
+    <circle cx="20" cy="16" r="5" fill="#ef4444" />
+    <circle cx="36" cy="16" r="5" fill="#eab308" />
+    <circle cx="52" cy="16" r="5" fill="#22c55e" />
+
+    <!-- Window Title -->
+    <text x="290" y="21" font-family="'Barlow', sans-serif" font-size="12" font-weight="600" fill="#f2ead8" fill-opacity="0.75" text-anchor="middle">
+      Gryf Studio — Metallica: Enter Sandman [E Standard • 120 FPS]
+    </text>
+
+    <!-- Window Inside Content: 3D Note Highway -->
+    <g clip-path="url(#highway-mockup-clip)">
+      <!-- Highway Canvas Void -->
+      <rect x="0" y="32" width="580" height="428" fill="#090706" />
+
+      <!-- Perspective Fretboard Plane -->
+      <polygon points="210,50 370,50 540,460 40,460" fill="#15100c" />
+
+      <!-- Side Perspective Laser Curbs -->
+      <line x1="210" y1="50" x2="40" y2="460" stroke="#e0392b" stroke-width="3" filter="url(#og-glow)" />
+      <line x1="370" y1="50" x2="540" y2="460" stroke="#38bdf8" stroke-width="3" filter="url(#og-glow)" />
+
+      <!-- Fret Wires -->
+      <g stroke="#f2ead8" stroke-opacity="0.35">
+        <line x1="205" y1="80" x2="375" y2="80" stroke-width="1" />
+        <line x1="195" y1="120" x2="385" y2="120" stroke-width="1.2" />
+        <line x1="180" y1="170" x2="400" y2="170" stroke-width="1.4" />
+        <line x1="160" y1="235" x2="420" y2="235" stroke-width="1.8" />
+        <line x1="130" y1="315" x2="450" y2="315" stroke-width="2.2" stroke-opacity="0.6" />
+        <line x1="85" y1="410" x2="495" y2="410" stroke-width="2.6" stroke-opacity="0.75" />
+      </g>
+
+      <!-- Fret Inlays -->
+      <polygon points="290,230 295,235 290,240 285,235" fill="#f2ead8" opacity="0.8" />
+      <polygon points="280,310 284,315 280,320 276,315" fill="#f2ead8" opacity="0.8" />
+      <polygon points="300,310 304,315 300,320 296,315" fill="#f2ead8" opacity="0.8" />
+
+      <!-- 6 Rocksmith Neon Strings in Perspective -->
+      <!-- 6: Low E (Crimson) -->
+      <line x1="225" y1="50" x2="90" y2="460" stroke="#e0392b" stroke-width="3.8" filter="url(#og-glow)" />
+      <!-- 5: A (Goldenrod Amber) -->
+      <line x1="251" y1="50" x2="170" y2="460" stroke="#eab308" stroke-width="3.2" filter="url(#og-glow)" />
+      <!-- 4: D (Electric Azure / Cyan) -->
+      <line x1="277" y1="50" x2="250" y2="460" stroke="#38bdf8" stroke-width="2.8" filter="url(#og-glow)" />
+      <!-- 3: G (Molten Sunset Orange) -->
+      <line x1="303" y1="50" x2="330" y2="460" stroke="#f97316" stroke-width="2.4" filter="url(#og-glow)" />
+      <!-- 2: B (Neon Emerald) -->
+      <line x1="329" y1="50" x2="410" y2="460" stroke="#22c55e" stroke-width="2.0" filter="url(#og-glow)" />
+      <!-- 1: High e (Violet Laser) -->
+      <line x1="355" y1="50" x2="490" y2="460" stroke="#a855f7" stroke-width="1.6" filter="url(#og-glow)" />
+
+      <!-- Note Gems Cascading -->
+      <!-- Low E Fret 0 Open Note -->
+      <g transform="translate(100, 410)" filter="url(#og-glow)">
+        <polygon points="0,-12 20,-12 28,0 20,12 0,12 -8,0" fill="#e0392b" stroke="#ffffff" stroke-width="1.2" />
+        <text x="10" y="4" font-family="'Big Shoulders Display', 'Oswald', sans-serif" font-size="14" font-weight="900" fill="#ffffff" text-anchor="middle">0</text>
+      </g>
+
+      <!-- A String Fret 2 Note -->
+      <g transform="translate(195, 345)" filter="url(#og-glow)">
+        <polygon points="0,-10 18,-10 24,0 18,10 0,10 -6,0" fill="#eab308" stroke="#ffffff" stroke-width="1.1" />
+        <text x="9" y="4" font-family="'Big Shoulders Display', 'Oswald', sans-serif" font-size="12" font-weight="900" fill="#0b0907" text-anchor="middle">2</text>
+      </g>
+
+      <!-- D String Fret 2 Note -->
+      <g transform="translate(262, 345)" filter="url(#og-glow)">
+        <polygon points="0,-10 18,-10 24,0 18,10 0,10 -6,0" fill="#38bdf8" stroke="#ffffff" stroke-width="1.1" />
+        <text x="9" y="4" font-family="'Big Shoulders Display', 'Oswald', sans-serif" font-size="12" font-weight="900" fill="#0b0907" text-anchor="middle">2</text>
+      </g>
+
+      <!-- G String Fret 0 Note (Distance) -->
+      <g transform="translate(315, 230)" filter="url(#og-glow)">
+        <polygon points="0,-8 14,-8 18,0 14,8 0,8 -4,0" fill="#f97316" stroke="#ffffff" stroke-width="0.8" />
+        <text x="7" y="3" font-family="'Big Shoulders Display', 'Oswald', sans-serif" font-size="10" font-weight="900" fill="#0b0907" text-anchor="middle">0</text>
+      </g>
+
+      <!-- Hit Line Bar -->
+      <line x1="60" y1="422" x2="520" y2="422" stroke="#e0392b" stroke-width="3" filter="url(#og-glow)" />
+      <line x1="60" y1="422" x2="520" y2="422" stroke="#ffffff" stroke-width="1" />
+
+      <!-- Hit Spark Particle -->
+      <circle cx="108" cy="422" r="14" fill="#e0392b" opacity="0.5" filter="url(#og-glow)" />
+      <circle cx="108" cy="422" r="5" fill="#ffffff" />
+
+      <!-- In-Game HUD: Score & Multiplier -->
+      <g transform="translate(18, 48)">
+        <rect x="0" y="0" width="130" height="28" rx="4" fill="#14110e" fill-opacity="0.9" stroke="#e2b04a" stroke-width="1" />
+        <text x="10" y="19" font-family="'Barlow Condensed', sans-serif" font-size="13" font-weight="900" fill="#58c46c">PERFECT</text>
+        <text x="82" y="19" font-family="'Barlow Condensed', sans-serif" font-size="13" font-weight="900" fill="#e2b04a">🔥 x4</text>
+      </g>
+
+      <!-- In-Game HUD: Tuner Pill -->
+      <g transform="translate(425, 48)">
+        <rect x="0" y="0" width="138" height="28" rx="4" fill="#14110e" fill-opacity="0.9" stroke="#38bdf8" stroke-width="1" />
+        <circle cx="14" cy="14" r="4" fill="#58c46c" filter="url(#og-glow)" />
+        <text x="24" y="19" font-family="'Barlow Condensed', sans-serif" font-size="12" font-weight="800" fill="#38bdf8">E2 IN TUNE</text>
+        <text x="105" y="19" font-family="'Barlow', sans-serif" font-size="10" font-weight="700" fill="#58c46c">0.0c</text>
+      </g>
+
+      <!-- Mini Waveform Visualizer at Bottom of Mockup -->
+      <g transform="translate(20, 442)">
+        <path
+          d="M 0,0 Q 20,-6 40,0 T 80,-10 T 120,6 T 160,-14 T 200,10 T 240,-4 T 280,0 T 320,-8 T 360,6 T 400,-10 T 440,4 T 480,-6 T 540,0"
+          fill="none"
+          stroke="#38bdf8"
+          stroke-width="1.8"
+          opacity="0.75"
+        />
+      </g>
+    </g>
+  </g>
+
+  <!-- Outer 1px Canvas Border -->
+  <rect x="1" y="1" width="1198" height="628" rx="0" fill="none" stroke="#241e18" stroke-width="2" />
+</svg>

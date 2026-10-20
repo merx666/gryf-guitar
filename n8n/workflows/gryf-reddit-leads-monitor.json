@@ -1,0 +1,116 @@
+{
+  "name": "Gryf Guitar - Reddit Leads & Mentions Monitor",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 30
+            }
+          ]
+        }
+      },
+      "id": "b2e8a102-b4f3-5f6b-9e20-561f494f3001",
+      "name": "Every 30 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://www.reddit.com/r/rocksmith/new.json?limit=25",
+        "options": {
+          "headers": {
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) GryfLeadFinder/1.0"
+          }
+        }
+      },
+      "id": "b2e8a102-b4f3-5f6b-9e20-561f494f3002",
+      "name": "Fetch r/rocksmith New Posts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        460,
+        300
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst leads = [];\nconst keywords = ['alternative', 'app', 'browser', 'tab', 'mac', 'linux', 'cable', 'no cable', 'real tone', 'free', 'online', 'latency'];\n\nfor (const item of items) {\n  const children = item.json?.data?.children || [];\n  for (const post of children) {\n    const title = (post.data?.title || '').toLowerCase();\n    const text = (post.data?.selftext || '').toLowerCase();\n    const fullContent = `${title} ${text}`;\n    \n    const matched = keywords.filter(k => fullContent.includes(k));\n    if (matched.length >= 2) {\n      leads.push({\n        id: post.data.id,\n        title: post.data.title,\n        author: post.data.author,\n        url: `https://reddit.com${post.data.permalink}`,\n        matchedKeywords: matched,\n        suggestedReply: `Hey u/${post.data.author}! If you're looking for a free, open-source alternative to Rocksmith that runs right in your browser (no Real Tone cable needed, works with standard mic or USB audio interface), check out Gryf: http://92.118.206.90:3000 (GitHub: https://github.com/merx666/gryf-guitar). It does real-time pitch detection, 3D note highway, and AI stem separation.`\n      });\n    }\n  }\n}\n\nreturn leads.length > 0 ? leads.map(l => ({ json: l })) : [];"
+      },
+      "id": "b2e8a102-b4f3-5f6b-9e20-561f494f3003",
+      "name": "Filter Relevant Posts & Draft Replies",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        700,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8090/reddit_lead",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"post_title\": $json.title,\n  \"post_url\": $json.url,\n  \"author\": $json.author,\n  \"suggested_reply\": $json.suggestedReply,\n  \"keywords\": $json.matchedKeywords\n}",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "b2e8a102-b4f3-5f6b-9e20-561f494f3004",
+      "name": "Notify Seeder Bot",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        940,
+        300
+      ],
+      "continueOnFail": true
+    }
+  ],
+  "connections": {
+    "Every 30 Minutes": {
+      "main": [
+        [
+          {
+            "node": "Fetch r/rocksmith New Posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch r/rocksmith New Posts": {
+      "main": [
+        [
+          {
+            "node": "Filter Relevant Posts & Draft Replies",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Relevant Posts & Draft Replies": {
+      "main": [
+        [
+          {
+            "node": "Notify Seeder Bot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

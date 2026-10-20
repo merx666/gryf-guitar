@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ScreenName, PlayerRank, PitchDetectionResult, TourSong, NoteHit } from './types';
+import { ScreenName, PlayerRank, PitchDetectionResult, TourSong, NoteHit, UserProfile } from './types';
 import { PLAYER_RANKS, getRankTitle } from './data/badgesData';
 import { audio } from './audio/audioEngine';
 import { sfx } from './audio/sfxPlayer';
@@ -19,6 +19,8 @@ import { TunerModal } from './components/TunerModal';
 import { FretboardModal } from './components/FretboardModal';
 import { LatencyCalibrationModal } from './components/LatencyCalibrationModal';
 import { TabImportModal } from './components/TabImportModal';
+import { AuthModal } from './components/AuthModal';
+import { ProUpgradeModal } from './components/ProUpgradeModal';
 
 export const App: React.FC = () => {
   // Nawigacja
@@ -29,6 +31,19 @@ export const App: React.FC = () => {
   const [isFretboardOpen, setIsFretboardOpen] = useState(false);
   const [isCalibrationOpen, setIsCalibrationOpen] = useState(false);
   const [isImportOpen, setIsImportOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isProUpgradeOpen, setIsProUpgradeOpen] = useState(false);
+
+  // Profil użytkownika & Subskrypcja
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(() => {
+    const saved = localStorage.getItem('gryf_user_session');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {}
+    }
+    return null;
+  });
 
   // Audio i mikrofon
   const [isMicActive, setIsMicActive] = useState(false);
@@ -205,10 +220,13 @@ export const App: React.FC = () => {
           onOpenTuner={() => setIsTunerOpen(true)}
           onOpenFretboard={() => setIsFretboardOpen(true)}
           onOpenCalibration={() => setIsCalibrationOpen(true)}
+          onOpenAuth={() => setIsAuthOpen(true)}
+          onOpenProUpgrade={() => setIsProUpgradeOpen(true)}
           detectedPitch={detectedPitch}
           isMicActive={isMicActive}
           onToggleMic={toggleMic}
           playerRank={playerRank}
+          userProfile={userProfile}
         />
       )}
 
@@ -350,6 +368,36 @@ export const App: React.FC = () => {
         isOpen={isImportOpen}
         onClose={() => setIsImportOpen(false)}
         onLoadCustomSong={handleLoadCustomSong}
+      />
+
+      {/* Modal Autoryzacji (Google, X, Facebook, Microsoft, Email, Gość) */}
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        onLogin={(profile) => {
+          setUserProfile(profile);
+        }}
+      />
+
+      {/* Modal Ulepszenia do Gryf PRO / Lifetime Backer */}
+      <ProUpgradeModal
+        isOpen={isProUpgradeOpen}
+        onClose={() => setIsProUpgradeOpen(false)}
+        onUpgradeSuccess={(tier) => {
+          setUserProfile((prev) => {
+            const updated: UserProfile = prev
+              ? { ...prev, tier }
+              : {
+                  id: 'usr_' + Date.now(),
+                  name: 'Gitarzysta PRO',
+                  provider: 'guest',
+                  tier,
+                  createdAt: new Date().toISOString(),
+                };
+            localStorage.setItem('gryf_user_session', JSON.stringify(updated));
+            return updated;
+          });
+        }}
       />
     </div>
   );

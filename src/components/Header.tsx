@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
-import { ScreenName, PlayerRank, PitchDetectionResult } from '../types';
-import { Sliders, Music, Award, Flame, Sparkles, Volume2 } from 'lucide-react';
+import { ScreenName, PlayerRank, PitchDetectionResult, UserProfile } from '../types';
+import { Sliders, Music, Award, Flame, Sparkles, Volume2, User, Crown, LogIn } from 'lucide-react';
 import { sfx } from '../audio/sfxPlayer';
 
 export interface HeaderProps {
@@ -17,6 +17,9 @@ export interface HeaderProps {
   onToggleMic?: () => void;
   playerRank?: PlayerRank;
   detectedPitch?: PitchDetectionResult | null;
+  userProfile?: UserProfile | null;
+  onOpenAuth?: () => void;
+  onOpenProUpgrade?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -33,6 +36,9 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleMic,
   playerRank,
   detectedPitch,
+  userProfile,
+  onOpenAuth,
+  onOpenProUpgrade,
 }) => {
   const isMic = isMicActive ?? detectionEnabled ?? false;
   const toggle = onToggleMic ?? onToggleDetection ?? (() => {});
@@ -101,23 +107,8 @@ export const Header: React.FC<HeaderProps> = ({
           className="flex items-center gap-3 text-left group cursor-pointer focus:outline-none"
         >
           {/* Ikona logo z gradientem */}
-          <div className="w-9 h-9 rounded-xl bg-[#14110e] border border-[#f2ead821] flex items-center justify-center p-1.5 shadow-md group-hover:border-[#e0392b] transition-colors">
-            <svg viewBox="0 0 64 64" className="w-full h-full">
-              <defs>
-                <linearGradient id="header-g" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0" stopColor="#ff8a1e" />
-                  <stop offset="1" stopColor="#e0392b" />
-                </linearGradient>
-              </defs>
-              <path
-                d="M14 46 L26 18 L32 34 L38 18 L50 46"
-                fill="none"
-                stroke="url(#header-g)"
-                strokeWidth="7"
-                strokeLinejoin="round"
-                strokeLinecap="round"
-              />
-            </svg>
+          <div className="w-9 h-9 rounded-xl bg-[#14110e] border border-[#f2ead821] flex items-center justify-center p-1 shadow-md group-hover:border-[#e0392b] transition-colors overflow-hidden">
+            <img src="/logo-icon.svg" alt="Gryf" className="w-full h-full object-contain" />
           </div>
 
           <div>
@@ -183,23 +174,42 @@ export const Header: React.FC<HeaderProps> = ({
         )}
       </div>
 
-      {/* Prawa strona: Studio AI PRO, Skróty i Odznaka Profilu */}
-      <div className="flex items-center gap-3">
+      {/* Prawa strona: Studio AI PRO, Skróty, Konto i Odznaka Profilu */}
+      <div className="flex items-center gap-2.5">
         {/* Przycisk Studia AI PRO */}
         <button
           onClick={() => {
             sfx.play('select');
             onNavigate('aistudio');
           }}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm border text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
             currentScreen === 'aistudio'
               ? 'bg-[#e2b04a] text-black border-[#e2b04a] shadow-lg shadow-amber-950/40'
               : 'bg-[#18130d] text-[#e2b04a] border-[#e2b04a55] hover:bg-[#e2b04a22]'
           }`}
         >
           <Sparkles className="w-3.5 h-3.5" />
-          <span>Studio AI • MP3</span>
+          <span className="hidden sm:inline">Studio AI</span>
         </button>
+
+        {/* Status Gryf PRO lub Przycisk Ulepsz */}
+        {userProfile?.tier === 'pro' || userProfile?.tier === 'lifetime' ? (
+          <div className="flex items-center gap-1 px-2.5 py-1 rounded-sm bg-[#e2b04a]/20 border border-[#e2b04a]/50 text-[#e2b04a] text-[11px] font-['Barlow_Condensed'] font-black uppercase tracking-wider shadow-[0_0_10px_rgba(226,176,74,0.3)]">
+            <Crown className="w-3.5 h-3.5 fill-[#e2b04a]" />
+            <span>{userProfile.tier === 'lifetime' ? 'FOUNDER' : 'PRO'}</span>
+          </div>
+        ) : (
+          <button
+            onClick={() => {
+              sfx.play('select');
+              if (onOpenProUpgrade) onOpenProUpgrade();
+            }}
+            className="flex items-center gap-1 px-2.5 py-1 rounded-sm bg-[#e0392b] hover:bg-[#c93226] text-white text-[11px] font-['Barlow_Condensed'] font-black uppercase tracking-wider transition-all cursor-pointer shadow-[0_0_15px_rgba(224,57,43,0.4)] animate-pulse"
+          >
+            <Crown className="w-3 h-3 fill-white" />
+            <span>ULEPSZ DO PRO</span>
+          </button>
+        )}
 
         {/* Stroik */}
         <button
@@ -208,10 +218,10 @@ export const Header: React.FC<HeaderProps> = ({
             if (onOpenTuner) onOpenTuner();
             else onNavigate('tuner');
           }}
-          className="px-3 py-1.5 rounded-xl bg-[#14110e] border border-[#f2ead821] hover:border-[#f2ead84d] text-xs font-bold text-[#f2ead8] flex items-center gap-1.5 transition-colors"
+          className="px-2.5 py-1.5 rounded-sm bg-[#14110e] border border-[#f2ead821] hover:border-[#f2ead84d] text-xs font-bold text-[#f2ead8] flex items-center gap-1.5 transition-colors cursor-pointer"
         >
           <Sliders className="w-3.5 h-3.5 text-[#e0392b]" />
-          <span className="hidden sm:inline">Stroik</span>
+          <span className="hidden md:inline">Stroik</span>
         </button>
 
         {/* Gryf */}
@@ -221,24 +231,62 @@ export const Header: React.FC<HeaderProps> = ({
             if (onOpenFretboard) onOpenFretboard();
             else onNavigate('fretboard');
           }}
-          className="px-3 py-1.5 rounded-xl bg-[#14110e] border border-[#f2ead821] hover:border-[#f2ead84d] text-xs font-bold text-[#f2ead8] flex items-center gap-1.5 transition-colors"
+          className="px-2.5 py-1.5 rounded-sm bg-[#14110e] border border-[#f2ead821] hover:border-[#f2ead84d] text-xs font-bold text-[#f2ead8] flex items-center gap-1.5 transition-colors cursor-pointer"
         >
           <Music className="w-3.5 h-3.5 text-sky-400" />
-          <span className="hidden sm:inline">Gryf</span>
+          <span className="hidden md:inline">Gryf</span>
         </button>
 
-        {/* Wizytówka Rangi i Kariery (Profile Badge z oryginalnego projektu) */}
+        {/* Logowanie / Avatar Użytkownika */}
+        {userProfile ? (
+          <div
+            onClick={() => {
+              sfx.play('select');
+              if (onOpenAuth) onOpenAuth();
+            }}
+            className="flex items-center gap-2 pl-2 pr-2.5 py-1 rounded-sm bg-[#181410] border border-[#f2ead821] hover:border-[#e2b04a] transition-all cursor-pointer"
+            title={`Zalogowano jako ${userProfile.name} (${userProfile.provider})`}
+          >
+            {userProfile.avatarUrl ? (
+              <img
+                src={userProfile.avatarUrl}
+                alt={userProfile.name}
+                className="w-5 h-5 rounded-full object-cover border border-[#e2b04a]"
+              />
+            ) : (
+              <div className="w-5 h-5 rounded-full bg-[#e2b04a]/20 border border-[#e2b04a] flex items-center justify-center text-[10px] font-bold text-[#e2b04a]">
+                {userProfile.name.charAt(0).toUpperCase()}
+              </div>
+            )}
+            <span className="text-xs font-['Barlow_Condensed'] uppercase tracking-wider font-bold text-[#f2ead8] max-w-[90px] truncate hidden sm:inline">
+              {userProfile.name}
+            </span>
+          </div>
+        ) : (
+          <button
+            onClick={() => {
+              sfx.play('select');
+              if (onOpenAuth) onOpenAuth();
+            }}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-[#1a1612] hover:bg-[#241e18] border border-[#f2ead8]/20 hover:border-[#f2ead8]/50 text-xs font-['Barlow_Condensed'] uppercase tracking-wider font-bold text-[#f2ead8] transition-all cursor-pointer"
+          >
+            <LogIn className="w-3.5 h-3.5 text-[#e2b04a]" />
+            <span>ZALOGUJ</span>
+          </button>
+        )}
+
+        {/* Wizytówka Rangi i Kariery */}
         <button
           onClick={() => {
             sfx.play('confirm');
             onNavigate('profile');
           }}
-          className="flex items-center gap-2.5 pl-2 pr-3 py-1 rounded-xl bg-[#14110e] border border-[#f2ead821] hover:border-[#f2ead84d] transition-colors cursor-pointer text-left"
+          className="flex items-center gap-2 pl-2 pr-3 py-1 rounded-sm bg-[#14110e] border border-[#f2ead821] hover:border-[#f2ead84d] transition-colors cursor-pointer text-left"
         >
-          <div className="px-2 py-0.5 rounded-md bg-[#251e18] border border-[#f2ead821] text-center font-['Barlow_Condensed'] font-black text-xs text-[#e2b04a]">
+          <div className="px-2 py-0.5 rounded-sm bg-[#251e18] border border-[#f2ead821] text-center font-['Barlow_Condensed'] font-black text-xs text-[#e2b04a]">
             Lv {activeRank.level}
           </div>
-          <div>
+          <div className="hidden lg:block">
             <div className="text-xs font-bold text-[#f2ead8] font-['Barlow_Condensed'] uppercase tracking-wider leading-none">
               {activeRank.title}
             </div>

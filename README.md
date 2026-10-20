@@ -1,9 +1,15 @@
-# Gryf 🎸 — Interaktywna Szkoła Gry na Gitarze (PL)
-
 <div align="center">
 
-**Profesjonalna aplikacja webowa do nauki gry na gitarze w czasie rzeczywistym z zerową latencją.**  
-Podłącz gitarę kablem audio lub graj akustycznie przed mikrofonem swojego laptopa/telefonu.
+<img src="public/banner-github.svg" alt="Gryf — The Open-Source Rocksmith+ for the Web" width="100%" />
+
+<br/><br/>
+
+<img src="public/logo.svg" alt="Gryf Logo" width="520px" />
+
+<br/>
+
+**The Open-Source Rocksmith+ for the Web — Real-time 3D Note Highway with Zero Latency & AI Audio-to-Tab**  
+*Podłącz gitarę kablem audio lub graj akustycznie przed mikrofonem. 100% Free & Open Source.*
 
 [![Build & Test](https://github.com/merx666/gryf-guitar/actions/workflows/deploy.yml/badge.svg)](https://github.com/merx666/gryf-guitar/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-amber.svg)](LICENSE)

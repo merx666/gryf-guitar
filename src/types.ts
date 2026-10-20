@@ -123,3 +123,15 @@ export interface AiTranscriptionResult {
   syncPointsCount: number;
   durationSec: number;
 }
+
+export type AuthProvider = 'google' | 'x' | 'facebook' | 'microsoft' | 'email' | 'guest';
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  email?: string;
+  avatarUrl?: string;
+  provider: AuthProvider;
+  tier: 'free' | 'pro' | 'lifetime';
+  createdAt: string;
+}

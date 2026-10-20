@@ -1,0 +1,82 @@
+{
+  "name": "Gryf Guitar - GitHub Growth & Releases Bot",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "github-gryf-webhook",
+        "options": {}
+      },
+      "id": "a3d9b203-c5a4-6b7c-0f31-672a505a4001",
+      "name": "GitHub Webhook Receiver",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        220,
+        300
+      ],
+      "webhookId": "a3d9b203-c5a4-6b7c-0f31-672a505a4001"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body || {};\nconst action = body.action || 'event';\nconst sender = body.sender?.login || 'guitarist';\nconst repo = body.repository?.full_name || 'merx666/gryf-guitar';\nconst stars = body.repository?.stargazers_count || 0;\n\nlet message = '';\nif (action === 'created' && body.starred_at) {\n  message = `⭐ New Star on GitHub! ${sender} just starred ${repo}. Total stars: ${stars}`;\n} else if (action === 'published' && body.release) {\n  message = `🚀 NEW RELEASE: Gryf ${body.release.tag_name} is live!\\n\\n${body.release.body || 'Performance improvements and new rock songs.'}`;\n} else {\n  message = `🔔 GitHub Event: ${action} by ${sender} on ${repo}`;\n}\n\nreturn [{\n  json: {\n    timestamp: new Date().toISOString(),\n    event: action,\n    sender,\n    stars,\n    message\n  }\n}];"
+      },
+      "id": "a3d9b203-c5a4-6b7c-0f31-672a505a4002",
+      "name": "Format Event Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8090/growth_event",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"text\": $json.message,\n  \"stars\": $json.stars,\n  \"event\": $json.event\n}",
+        "options": {
+          "timeout": 5000
+        }
+      },
+      "id": "a3d9b203-c5a4-6b7c-0f31-672a505a4003",
+      "name": "Log to Growth Hub",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        720,
+        300
+      ],
+      "continueOnFail": true
+    }
+  ],
+  "connections": {
+    "GitHub Webhook Receiver": {
+      "main": [
+        [
+          {
+            "node": "Format Event Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Event Message": {
+      "main": [
+        [
+          {
+            "node": "Log to Growth Hub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

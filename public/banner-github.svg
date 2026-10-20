@@ -1,0 +1,405 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" width="1280" height="640">
+  <defs>
+    <!-- Glow and Lighting Filters -->
+    <filter id="bloom-heavy" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="12" result="blur1" />
+      <feGaussianBlur stdDeviation="4" result="blur2" />
+      <feMerge>
+        <feMergeNode in="blur1" />
+        <feMergeNode in="blur2" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <filter id="bloom-soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <filter id="hero-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#000000" flood-opacity="0.95" />
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#e0392b" flood-opacity="0.3" />
+    </filter>
+
+    <!-- Background Atmospheric Gradients -->
+    <radialGradient id="stage-spotlight-left" cx="20%" cy="10%" r="70%">
+      <stop offset="0%" stop-color="#e0392b" stop-opacity="0.28" />
+      <stop offset="50%" stop-color="#991b1b" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#0b0907" stop-opacity="0" />
+    </radialGradient>
+
+    <radialGradient id="stage-spotlight-right" cx="80%" cy="10%" r="70%">
+      <stop offset="0%" stop-color="#e2b04a" stop-opacity="0.22" />
+      <stop offset="50%" stop-color="#d97706" stop-opacity="0.06" />
+      <stop offset="100%" stop-color="#0b0907" stop-opacity="0" />
+    </radialGradient>
+
+    <radialGradient id="horizon-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.3" />
+      <stop offset="40%" stop-color="#e0392b" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#0b0907" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Fretboard Shading -->
+    <linearGradient id="fretboard-fade" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#14100c" />
+      <stop offset="40%" stop-color="#19130e" />
+      <stop offset="100%" stop-color="#090706" />
+    </linearGradient>
+
+    <linearGradient id="rail-crimson" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ff7b6b" />
+      <stop offset="50%" stop-color="#e0392b" />
+      <stop offset="100%" stop-color="#7f1d1d" />
+    </linearGradient>
+
+    <linearGradient id="rail-cyan" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#a5f3fc" />
+      <stop offset="50%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0369a1" />
+    </linearGradient>
+
+    <!-- Text Gradients -->
+    <linearGradient id="gold-title-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="30%" stop-color="#fdf4dc" />
+      <stop offset="65%" stop-color="#e2b04a" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+
+    <linearGradient id="gem-crimson-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fca5a5" />
+      <stop offset="40%" stop-color="#ef4444" />
+      <stop offset="100%" stop-color="#991b1b" />
+    </linearGradient>
+
+    <linearGradient id="gem-amber-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="40%" stop-color="#eab308" />
+      <stop offset="100%" stop-color="#a16207" />
+    </linearGradient>
+
+    <linearGradient id="gem-cyan-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e0f2fe" />
+      <stop offset="40%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+
+    <linearGradient id="gem-orange-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffedd5" />
+      <stop offset="40%" stop-color="#f97316" />
+      <stop offset="100%" stop-color="#c2410c" />
+    </linearGradient>
+
+    <linearGradient id="gem-green-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#dcfce7" />
+      <stop offset="40%" stop-color="#22c55e" />
+      <stop offset="100%" stop-color="#15803d" />
+    </linearGradient>
+
+    <linearGradient id="gem-purple-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f3e8ff" />
+      <stop offset="40%" stop-color="#a855f7" />
+      <stop offset="100%" stop-color="#6b21a8" />
+    </linearGradient>
+
+    <!-- Clip path for highway elements -->
+    <clipPath id="highway-clip">
+      <polygon points="500,280 780,280 1100,640 180,640" />
+    </clipPath>
+  </defs>
+
+  <!-- ==================== 1. STAGE ATMOSPHERE & BACKGROUND ==================== -->
+  <rect width="1280" height="640" fill="#0b0907" />
+
+  <!-- Stadium Concert Stage Beams -->
+  <polygon points="0,0 360,0 600,640 140,640" fill="url(#stage-spotlight-left)" />
+  <polygon points="920,0 1280,0 1140,640 680,640" fill="url(#stage-spotlight-right)" />
+
+  <!-- Overhead Truss & Laser Beams Grid -->
+  <g stroke="#f2ead8" stroke-opacity="0.08" stroke-width="1">
+    <line x1="0" y1="40" x2="1280" y2="40" />
+    <line x1="0" y1="80" x2="1280" y2="80" />
+    <line x1="0" y1="120" x2="1280" y2="120" />
+    <line x1="0" y1="160" x2="1280" y2="160" />
+    <!-- Perspective stage guide rays -->
+    <line x1="640" y1="280" x2="0" y2="200" />
+    <line x1="640" y1="280" x2="0" y2="350" />
+    <line x1="640" y1="280" x2="1280" y2="200" />
+    <line x1="640" y1="280" x2="1280" y2="350" />
+  </g>
+
+  <!-- Horizon Vanishing Point Glow -->
+  <circle cx="640" cy="280" r="160" fill="url(#horizon-glow)" />
+
+  <!-- ==================== 2. 3D NOTE HIGHWAY (PERSPECTIVE) ==================== -->
+  <!-- Ebony Fretboard Perspective Slab -->
+  <polygon points="500,280 780,280 1100,640 180,640" fill="url(#fretboard-fade)" stroke="#241e18" stroke-width="2" />
+
+  <!-- Fretboard Left & Right Luminous Guide Rails -->
+  <line x1="500" y1="280" x2="180" y2="640" stroke="url(#rail-crimson)" stroke-width="5" filter="url(#bloom-heavy)" />
+  <line x1="500" y1="280" x2="180" y2="640" stroke="#ffffff" stroke-width="1.2" opacity="0.9" />
+
+  <line x1="780" y1="280" x2="1100" y2="640" stroke="url(#rail-cyan)" stroke-width="5" filter="url(#bloom-heavy)" />
+  <line x1="780" y1="280" x2="1100" y2="640" stroke="#ffffff" stroke-width="1.2" opacity="0.9" />
+
+  <!-- Logarithmic Nickel Fret Wires in Perspective -->
+  <g stroke="#f2ead8" stroke-opacity="0.4">
+    <!-- Fret 24 -->
+    <line x1="492" y1="294" x2="788" y2="294" stroke-width="1.4" />
+    <!-- Fret 21 -->
+    <line x1="478" y1="312" x2="802" y2="312" stroke-width="1.6" />
+    <!-- Fret 19 -->
+    <line x1="460" y1="334" x2="820" y2="334" stroke-width="1.8" />
+    <!-- Fret 17 -->
+    <line x1="438" y1="362" x2="842" y2="362" stroke-width="2.0" />
+    <!-- Fret 15 -->
+    <line x1="408" y1="398" x2="872" y2="398" stroke-width="2.4" />
+    <!-- Fret 12 (OCTAVE FRET - Doubled Luminous Nickel Wire) -->
+    <line x1="368" y1="445" x2="912" y2="445" stroke="#f2ead8" stroke-opacity="0.85" stroke-width="3.2" filter="url(#bloom-soft)" />
+    <line x1="366" y1="448" x2="914" y2="448" stroke="#ffffff" stroke-width="1.2" />
+    <!-- Fret 9 -->
+    <line x1="316" y1="508" x2="964" y2="508" stroke-width="3.4" />
+    <!-- Fret 7 -->
+    <line x1="248" y1="588" x2="1032" y2="588" stroke-width="4.0" />
+  </g>
+
+  <!-- Mother of Pearl Position Inlays -->
+  <!-- Fret 12 Double Diamond Inlays -->
+  <polygon points="610,439 616,445 610,451 604,445" fill="#f2ead8" opacity="0.85" filter="url(#bloom-soft)" />
+  <polygon points="670,439 676,445 670,451 664,445" fill="#f2ead8" opacity="0.85" filter="url(#bloom-soft)" />
+  <!-- Fret 9 Diamond Inlay -->
+  <polygon points="640,499 648,508 640,517 632,508" fill="#f2ead8" opacity="0.8" />
+  <!-- Fret 7 Diamond Inlay -->
+  <polygon points="640,576 650,588 640,600 630,588" fill="#f2ead8" opacity="0.85" />
+
+  <!-- 6 Rocksmith Neon Strings in 3D Perspective -->
+  <!-- String 6: Low E (Crimson Flame #e0392b) -->
+  <g filter="url(#bloom-soft)">
+    <line x1="525" y1="280" x2="260" y2="640" stroke="#e0392b" stroke-width="5.5" stroke-linecap="round" />
+    <line x1="525" y1="280" x2="260" y2="640" stroke="#ffb4aa" stroke-width="1.5" stroke-linecap="round" opacity="0.9" />
+  </g>
+  <!-- String 5: A (Goldenrod Amber #eab308) -->
+  <g filter="url(#bloom-soft)">
+    <line x1="571" y1="280" x2="412" y2="640" stroke="#eab308" stroke-width="4.8" stroke-linecap="round" />
+    <line x1="571" y1="280" x2="412" y2="640" stroke="#fef9c3" stroke-width="1.3" stroke-linecap="round" opacity="0.9" />
+  </g>
+  <!-- String 4: D (Electric Azure / Cyan #38bdf8) -->
+  <g filter="url(#bloom-soft)">
+    <line x1="617" y1="280" x2="564" y2="640" stroke="#38bdf8" stroke-width="4.2" stroke-linecap="round" />
+    <line x1="617" y1="280" x2="564" y2="640" stroke="#e0f2fe" stroke-width="1.1" stroke-linecap="round" opacity="0.95" />
+  </g>
+  <!-- String 3: G (Molten Sunset Orange #f97316) -->
+  <g filter="url(#bloom-soft)">
+    <line x1="663" y1="280" x2="716" y2="640" stroke="#f97316" stroke-width="3.6" stroke-linecap="round" />
+    <line x1="663" y1="280" x2="716" y2="640" stroke="#ffedd5" stroke-width="1.0" stroke-linecap="round" opacity="0.9" />
+  </g>
+  <!-- String 2: B (Neon Emerald #22c55e) -->
+  <g filter="url(#bloom-soft)">
+    <line x1="709" y1="280" x2="868" y2="640" stroke="#22c55e" stroke-width="3.0" stroke-linecap="round" />
+    <line x1="709" y1="280" x2="868" y2="640" stroke="#dcfce7" stroke-width="0.8" stroke-linecap="round" opacity="0.9" />
+  </g>
+  <!-- String 1: High e (Violet Laser #a855f7) -->
+  <g filter="url(#bloom-soft)">
+    <line x1="755" y1="280" x2="1020" y2="640" stroke="#a855f7" stroke-width="2.4" stroke-linecap="round" />
+    <line x1="755" y1="280" x2="1020" y2="640" stroke="#f3e8ff" stroke-width="0.7" stroke-linecap="round" opacity="0.9" />
+  </g>
+
+  <!-- ==================== 3. 3D GEMSTONE NOTES & SUSTAIN TAILS ==================== -->
+  <!-- Note Sustain Trail on String 4 (Cyan) -->
+  <polygon points="613,380 621,380 580,510 568,510" fill="#38bdf8" opacity="0.35" filter="url(#bloom-soft)" />
+
+  <!-- Note Gem 1: String 6 / Fret 7 (Foreground Hit Note) -->
+  <g transform="translate(275, 590)" filter="url(#bloom-heavy)">
+    <!-- Gem Outer Shadow & Body -->
+    <polygon points="0,-16 28,-16 40,0 28,16 0,16 -12,0" fill="url(#gem-crimson-grad)" stroke="#ffffff" stroke-width="1.5" />
+    <!-- Inner Gem Facet -->
+    <polygon points="4,-11 24,-11 32,0 24,11 4,11 -4,0" fill="#ffffff" opacity="0.3" />
+    <!-- Fret Number -->
+    <text x="14" y="6" font-family="'Big Shoulders Display', 'Oswald', sans-serif" font-size="19" font-weight="900" fill="#ffffff" text-anchor="middle">7</text>
+  </g>
+
+  <!-- Note Gem 2: String 5 / Fret 9 -->
+  <g transform="translate(426, 510)" filter="url(#bloom-heavy)">
+    <polygon points="0,-14 24,-14 34,0 24,14 0,14 -10,0" fill="url(#gem-amber-grad)" stroke="#ffffff" stroke-width="1.3" />
+    <polygon points="3,-10 21,-10 28,0 21,10 3,10 -3,0" fill="#ffffff" opacity="0.3" />
+    <text x="12" y="5" font-family="'Big Shoulders Display', 'Oswald', sans-serif" font-size="16" font-weight="900" fill="#0b0907" text-anchor="middle">9</text>
+  </g>
+
+  <!-- Note Gem 3: String 4 / Fret 12 -->
+  <g transform="translate(568, 445)" filter="url(#bloom-heavy)">
+    <polygon points="0,-13 22,-13 32,0 22,13 0,13 -10,0" fill="url(#gem-cyan-grad)" stroke="#ffffff" stroke-width="1.3" />
+    <polygon points="3,-9 19,-9 26,0 19,9 3,9 -3,0" fill="#ffffff" opacity="0.3" />
+    <text x="11" y="5" font-family="'Big Shoulders Display', 'Oswald', sans-serif" font-size="15" font-weight="900" fill="#0b0907" text-anchor="middle">12</text>
+  </g>
+
+  <!-- Note Gem 4: String 3 / Fret 15 -->
+  <g transform="translate(684, 396)" filter="url(#bloom-heavy)">
+    <polygon points="0,-11 18,-11 26,0 18,11 0,11 -8,0" fill="url(#gem-orange-grad)" stroke="#ffffff" stroke-width="1.1" />
+    <text x="9" y="4" font-family="'Big Shoulders Display', 'Oswald', sans-serif" font-size="13" font-weight="900" fill="#0b0907" text-anchor="middle">15</text>
+  </g>
+
+  <!-- Note Gem 5: String 2 / Fret 17 -->
+  <g transform="translate(778, 360)" filter="url(#bloom-heavy)">
+    <polygon points="0,-10 16,-10 22,0 16,10 0,10 -6,0" fill="url(#gem-green-grad)" stroke="#ffffff" stroke-width="1" />
+    <text x="8" y="4" font-family="'Big Shoulders Display', 'Oswald', sans-serif" font-size="12" font-weight="900" fill="#0b0907" text-anchor="middle">17</text>
+  </g>
+
+  <!-- Note Gem 6: String 1 / Fret 19 (Distance horizon note) -->
+  <g transform="translate(830, 332)" filter="url(#bloom-soft)">
+    <polygon points="0,-8 14,-8 18,0 14,8 0,8 -4,0" fill="url(#gem-purple-grad)" stroke="#ffffff" stroke-width="0.8" />
+    <text x="7" y="3" font-family="'Big Shoulders Display', 'Oswald', sans-serif" font-size="10" font-weight="900" fill="#ffffff" text-anchor="middle">19</text>
+  </g>
+
+  <!-- ==================== 4. HIT ZONE LASER & REAL-TIME FEEDBACK ==================== -->
+  <!-- Laser Hit Line Bar -->
+  <g filter="url(#bloom-heavy)">
+    <line x1="220" y1="602" x2="1060" y2="602" stroke="#e0392b" stroke-width="4.5" />
+    <line x1="220" y1="602" x2="1060" y2="602" stroke="#ffffff" stroke-width="1.5" />
+  </g>
+
+  <!-- Perfect Hit Burst Particles at String 6 -->
+  <g transform="translate(288, 602)" filter="url(#bloom-heavy)">
+    <circle cx="0" cy="0" r="18" fill="#e0392b" opacity="0.4" />
+    <circle cx="0" cy="0" r="7" fill="#ffffff" />
+    <!-- Sparks -->
+    <path d="M -25,0 L 25,0 M 0,-25 L 0,25 M -16,-16 L 16,16 M -16,16 L 16,-16" stroke="#ffffff" stroke-width="1.6" />
+  </g>
+
+  <!-- In-Game HUD Overlays on Highway -->
+  <!-- Score & Streak Multiplier -->
+  <g transform="translate(330, 565)" filter="url(#bloom-soft)">
+    <rect x="0" y="0" width="138" height="26" rx="4" fill="#110e0b" fill-opacity="0.85" stroke="#e2b04a" stroke-width="1.2" />
+    <text x="10" y="18" font-family="'Barlow Condensed', 'Oswald', sans-serif" font-size="14" font-weight="900" fill="#58c46c" letter-spacing="0.08em">PERFECT! +100</text>
+    <text x="96" y="18" font-family="'Barlow Condensed', 'Oswald', sans-serif" font-size="14" font-weight="900" fill="#e2b04a">🔥 x4</text>
+  </g>
+
+  <!-- Tuner Live Feedback Pill -->
+  <g transform="translate(820, 565)" filter="url(#bloom-soft)">
+    <rect x="0" y="0" width="155" height="26" rx="4" fill="#110e0b" fill-opacity="0.85" stroke="#38bdf8" stroke-width="1.2" />
+    <circle cx="15" cy="13" r="5" fill="#58c46c" filter="url(#bloom-soft)" />
+    <text x="27" y="18" font-family="'Barlow Condensed', 'Oswald', sans-serif" font-size="13" font-weight="900" fill="#38bdf8" letter-spacing="0.1em">E2 LOCK 82.4 Hz</text>
+    <text x="126" y="18" font-family="'Barlow', sans-serif" font-size="11" font-weight="700" fill="#58c46c">0.0c</text>
+  </g>
+
+  <!-- ==================== 5. AUDIO OSCILLOSCOPES (LEFT & RIGHT) ==================== -->
+  <!-- Left Oscilloscope (Cyan Mic / Guitar Input Stream) -->
+  <g filter="url(#bloom-soft)">
+    <path
+      d="M 20,440 Q 50,420 80,440 T 140,440 T 180,400 T 210,480 T 240,440"
+      fill="none"
+      stroke="#38bdf8"
+      stroke-width="2.5"
+      stroke-linecap="round"
+      opacity="0.75"
+    />
+    <text x="25" y="475" font-family="'Barlow Condensed', sans-serif" font-size="12" font-weight="700" fill="#38bdf8" letter-spacing="0.12em" opacity="0.8">AUDIO IN: 48kHz / 2.7ms</text>
+  </g>
+
+  <!-- Right Oscilloscope (Green Isolated Guitar Stem DSP) -->
+  <g filter="url(#bloom-soft)">
+    <path
+      d="M 1040,440 Q 1070,470 1100,430 T 1160,450 T 1200,390 T 1230,470 T 1260,440"
+      fill="none"
+      stroke="#58c46c"
+      stroke-width="2.5"
+      stroke-linecap="round"
+      opacity="0.75"
+    />
+    <text x="1090" y="475" font-family="'Barlow Condensed', sans-serif" font-size="12" font-weight="700" fill="#58c46c" letter-spacing="0.12em" opacity="0.8">DEMUCS v4: GUITAR STEM</text>
+  </g>
+
+  <!-- ==================== 6. TOP HERO BRANDING & HEADLINE ==================== -->
+  <g transform="translate(640, 95)" text-anchor="middle" filter="url(#hero-shadow)">
+    <!-- Small Category Kicker -->
+    <rect x="-140" y="-62" width="280" height="26" rx="13" fill="#e0392b" fill-opacity="0.15" stroke="#e0392b" stroke-width="1.4" />
+    <text x="0" y="-45" font-family="'Barlow Condensed', 'Oswald', sans-serif" font-size="13" font-weight="900" fill="#e0392b" letter-spacing="0.25em">
+      ⚡ NEXT-GEN WEB GUITAR REVOLUTION ⚡
+    </text>
+
+    <!-- Master Title "GRYF" with Chiseled Dual Tone -->
+    <text
+      x="0"
+      y="22"
+      font-family="'Big Shoulders Display', 'Oswald', sans-serif"
+      font-size="94"
+      font-weight="900"
+      fill="url(#gold-title-grad)"
+      letter-spacing="0.08em"
+    >
+      GRYF
+    </text>
+
+    <!-- Subheadline -->
+    <text
+      x="0"
+      y="64"
+      font-family="'Big Shoulders Display', 'Oswald', sans-serif"
+      font-size="34"
+      font-weight="900"
+      fill="#f2ead8"
+      letter-spacing="0.14em"
+    >
+      THE OPEN-SOURCE ROCKSMITH+ FOR THE WEB
+    </text>
+
+    <!-- Tagline -->
+    <text
+      x="0"
+      y="92"
+      font-family="'Barlow', system-ui, sans-serif"
+      font-size="15"
+      font-weight="600"
+      fill="#f2ead8"
+      fill-opacity="0.75"
+      letter-spacing="0.12em"
+    >
+      Plug in any guitar or play into your microphone • Zero lag AudioWorklet • AI Stem separation
+    </text>
+  </g>
+
+  <!-- ==================== 7. NEON FEATURE BADGES (BOTTOM ROW) ==================== -->
+  <g transform="translate(640, 240)">
+    <!-- Badge 1: WebGPU & AudioWorklet -->
+    <g transform="translate(-460, 0)">
+      <rect x="0" y="0" width="215" height="34" rx="6" fill="#14110e" stroke="#38bdf8" stroke-width="1.5" />
+      <circle cx="20" cy="17" r="4" fill="#38bdf8" filter="url(#bloom-soft)" />
+      <text x="34" y="22" font-family="'Barlow Condensed', sans-serif" font-size="14" font-weight="800" fill="#f2ead8" letter-spacing="0.06em">
+        ⚡ WebGPU &amp; AudioWorklet
+      </text>
+    </g>
+
+    <!-- Badge 2: AI Demucs v4 & YIN Pitch -->
+    <g transform="translate(-230, 0)">
+      <rect x="0" y="0" width="215" height="34" rx="6" fill="#14110e" stroke="#e2b04a" stroke-width="1.5" />
+      <circle cx="20" cy="17" r="4" fill="#e2b04a" filter="url(#bloom-soft)" />
+      <text x="34" y="22" font-family="'Barlow Condensed', sans-serif" font-size="14" font-weight="800" fill="#f2ead8" letter-spacing="0.06em">
+        🧠 AI Demucs v4 &amp; YIN DSP
+      </text>
+    </g>
+
+    <!-- Badge 3: Guitar Pro 8 & MusicXML -->
+    <g transform="translate(15, 0)">
+      <rect x="0" y="0" width="215" height="34" rx="6" fill="#14110e" stroke="#58c46c" stroke-width="1.5" />
+      <circle cx="20" cy="17" r="4" fill="#58c46c" filter="url(#bloom-soft)" />
+      <text x="34" y="22" font-family="'Barlow Condensed', sans-serif" font-size="14" font-weight="800" fill="#f2ead8" letter-spacing="0.06em">
+        🎸 Guitar Pro 8 &amp; XML Tabs
+      </text>
+    </g>
+
+    <!-- Badge 4: 100% Free & Open Source -->
+    <g transform="translate(245, 0)">
+      <rect x="0" y="0" width="215" height="34" rx="6" fill="#14110e" stroke="#e0392b" stroke-width="1.5" />
+      <circle cx="20" cy="17" r="4" fill="#e0392b" filter="url(#bloom-soft)" />
+      <text x="34" y="22" font-family="'Barlow Condensed', sans-serif" font-size="14" font-weight="800" fill="#f2ead8" letter-spacing="0.06em">
+        🔓 100% Free &amp; Open Source
+      </text>
+    </g>
+  </g>
+
+  <!-- Outer 1px Chassis Filament Border -->
+  <rect x="1" y="1" width="1278" height="638" rx="8" fill="none" stroke="#241e18" stroke-width="2" />
+</svg>

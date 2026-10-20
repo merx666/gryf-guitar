@@ -1,0 +1,338 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Glow Filters -->
+    <filter id="glow-heavy" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="9" result="blur1" />
+      <feGaussianBlur stdDeviation="4" result="blur2" />
+      <feMerge>
+        <feMergeNode in="blur1" />
+        <feMergeNode in="blur2" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <filter id="glow-soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3.5" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <filter id="pick-shadow" x="-20%" y="-15%" width="140%" height="145%">
+      <feDropShadow dx="0" dy="18" stdDeviation="16" flood-color="#000000" flood-opacity="0.95" />
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#e0392b" flood-opacity="0.25" />
+    </filter>
+
+    <!-- Gradients -->
+    <radialGradient id="stage-halo" cx="50%" cy="38%" r="60%">
+      <stop offset="0%" stop-color="#e0392b" stop-opacity="0.22" />
+      <stop offset="45%" stop-color="#e2b04a" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#0b0907" stop-opacity="0" />
+    </radialGradient>
+
+    <radialGradient id="pick-face-grad" cx="46%" cy="32%" r="68%">
+      <stop offset="0%" stop-color="#1f1813" />
+      <stop offset="55%" stop-color="#120e0b" />
+      <stop offset="100%" stop-color="#070605" />
+    </radialGradient>
+
+    <!-- Pick Rim Multi-Stop Bevel -->
+    <linearGradient id="pick-rim-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fdf3db" />
+      <stop offset="22%" stop-color="#e2b04a" />
+      <stop offset="58%" stop-color="#e0392b" />
+      <stop offset="85%" stop-color="#991b1b" />
+      <stop offset="100%" stop-color="#e2b04a" />
+    </linearGradient>
+
+    <linearGradient id="neck-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0e0b09" />
+      <stop offset="15%" stop-color="#1a1410" />
+      <stop offset="50%" stop-color="#241c16" />
+      <stop offset="85%" stop-color="#1a1410" />
+      <stop offset="100%" stop-color="#0e0b09" />
+    </linearGradient>
+
+    <linearGradient id="gold-facet-light" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff6db" />
+      <stop offset="45%" stop-color="#fcd34d" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+
+    <linearGradient id="gold-facet-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b45309" />
+      <stop offset="70%" stop-color="#78350f" />
+      <stop offset="100%" stop-color="#451a03" />
+    </linearGradient>
+
+    <linearGradient id="crimson-facet" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff7b6b" />
+      <stop offset="50%" stop-color="#e0392b" />
+      <stop offset="100%" stop-color="#7f1d1d" />
+    </linearGradient>
+
+    <linearGradient id="bolt-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="40%" stop-color="#38bdf8" />
+      <stop offset="80%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#e0392b" />
+    </linearGradient>
+
+    <linearGradient id="metal-fret" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+      <stop offset="40%" stop-color="#e2d8c3" stop-opacity="0.75" />
+      <stop offset="100%" stop-color="#695b4d" stop-opacity="0.6" />
+    </linearGradient>
+
+    <!-- Clip path to keep strings inside pick -->
+    <clipPath id="pick-inner-clip">
+      <path d="M 256, 56 C 356, 56 438, 92 438, 194 C 438, 286 352, 380 264, 456 C 259, 460 253, 460 248, 456 C 160, 380 74, 286 74, 194 C 74, 92 156, 56 256, 56 Z" />
+    </clipPath>
+  </defs>
+
+  <!-- 1. Background Surface (Rounded Squircle App Icon Base) -->
+  <rect width="512" height="512" rx="112" fill="#0b0907" />
+  <rect width="510" height="510" x="1" y="1" rx="111" fill="none" stroke="#241e18" stroke-width="2" />
+  <circle cx="256" cy="220" r="230" fill="url(#stage-halo)" />
+
+  <!-- Background decorative stage mesh pattern (subtle 10% opacity) -->
+  <g opacity="0.12" stroke="#f2ead8" stroke-width="0.8">
+    <line x1="60" y1="256" x2="452" y2="256" />
+    <line x1="256" y1="60" x2="256" y2="452" />
+    <circle cx="256" cy="256" r="140" fill="none" stroke-dasharray="3 6" />
+    <circle cx="256" cy="256" r="190" fill="none" stroke-dasharray="4 8" />
+  </g>
+
+  <!-- 2. Guitar Pick Shield with Deep Concert Shadow -->
+  <g filter="url(#pick-shadow)">
+    <!-- Pick Outer Body with 4px Beveled High-Voltage Rim -->
+    <path
+      d="M 256, 50 C 360, 50 444, 88 444, 194 C 444, 290 356, 386 266, 464 C 260, 469 252, 469 246, 464 C 156, 386 68, 290 68, 194 C 68, 88 152, 50 256, 50 Z"
+      fill="url(#pick-face-grad)"
+      stroke="url(#pick-rim-grad)"
+      stroke-width="7"
+      stroke-linejoin="round"
+    />
+
+    <!-- Inner Metallic Inset Hairline -->
+    <path
+      d="M 256, 62 C 348, 62 426, 96 426, 194 C 426, 280 346, 370 263, 444 C 259, 447 253, 447 249, 444 C 166, 370 86, 280 86, 194 C 86, 96 164, 62 256, 62 Z"
+      fill="none"
+      stroke="#f2ead8"
+      stroke-opacity="0.22"
+      stroke-width="1.8"
+    />
+  </g>
+
+  <!-- 3. Fretboard & Note Highway Element (Clipped inside Pick) -->
+  <g clip-path="url(#pick-inner-clip)">
+    <!-- Ebony Fretboard Perspective Slab -->
+    <polygon points="204,70 308,70 330,460 182,460" fill="url(#neck-grad)" />
+
+    <!-- Fretboard Edge Binding (Cream Binding) -->
+    <line x1="204" y1="70" x2="182" y2="460" stroke="#f2ead8" stroke-width="2.2" stroke-opacity="0.4" />
+    <line x1="308" y1="70" x2="330" y2="460" stroke="#f2ead8" stroke-width="2.2" stroke-opacity="0.4" />
+
+    <!-- Nickel Fret Wires (Acoustic Logarithmic Spacing) -->
+    <!-- Fret 1 -->
+    <line x1="202" y1="125" x2="310" y2="125" stroke="url(#metal-fret)" stroke-width="2.8" />
+    <line x1="202" y1="126.5" x2="310" y2="126.5" stroke="#000000" stroke-width="1" stroke-opacity="0.5" />
+
+    <!-- Fret 2 -->
+    <line x1="198" y1="185" x2="314" y2="185" stroke="url(#metal-fret)" stroke-width="3.0" />
+    <line x1="198" y1="186.5" x2="314" y2="186.5" stroke="#000000" stroke-width="1" stroke-opacity="0.5" />
+
+    <!-- Fret 3 -->
+    <line x1="194" y1="250" x2="318" y2="250" stroke="url(#metal-fret)" stroke-width="3.2" />
+    <line x1="194" y1="251.5" x2="318" y2="251.5" stroke="#000000" stroke-width="1" stroke-opacity="0.5" />
+
+    <!-- Fret 4 -->
+    <line x1="189" y1="325" x2="323" y2="325" stroke="url(#metal-fret)" stroke-width="3.5" />
+    <line x1="189" y1="326.5" x2="323" y2="326.5" stroke="#000000" stroke-width="1" stroke-opacity="0.5" />
+
+    <!-- Fret 5 -->
+    <line x1="184" y1="410" x2="328" y2="410" stroke="url(#metal-fret)" stroke-width="3.8" />
+    <line x1="184" y1="411.5" x2="328" y2="411.5" stroke="#000000" stroke-width="1" stroke-opacity="0.5" />
+
+    <!-- Mother of Pearl Diamond Position Inlays -->
+    <!-- Inlay at Fret 3 -->
+    <polygon points="256,212 262,217.5 256,223 250,217.5" fill="#f2ead8" opacity="0.85" filter="url(#glow-soft)" />
+    <!-- Dual Inlay at Octave Fret 5 / 12 -->
+    <polygon points="238,362 243,367 238,372 233,367" fill="#f2ead8" opacity="0.8" />
+    <polygon points="274,362 279,367 274,372 269,367" fill="#f2ead8" opacity="0.8" />
+
+    <!-- 4. Rocksmith 6 Neon Strings with Seeding Glow -->
+    <!-- String 6: Low E (Crimson Flame #e0392b) -->
+    <g filter="url(#glow-soft)">
+      <line x1="214" y1="65" x2="194" y2="465" stroke="#e0392b" stroke-width="4.8" stroke-linecap="round" />
+      <line x1="214" y1="65" x2="194" y2="465" stroke="#ff9b90" stroke-width="1.2" stroke-linecap="round" opacity="0.9" />
+    </g>
+
+    <!-- String 5: A (Goldenrod Amber #eab308) -->
+    <g filter="url(#glow-soft)">
+      <line x1="230" y1="65" x2="218" y2="465" stroke="#eab308" stroke-width="4.2" stroke-linecap="round" />
+      <line x1="230" y1="65" x2="218" y2="465" stroke="#fef08a" stroke-width="1.0" stroke-linecap="round" opacity="0.9" />
+    </g>
+
+    <!-- String 4: D (Electric Azure / Cyan #38bdf8) -->
+    <g filter="url(#glow-soft)">
+      <line x1="247" y1="65" x2="242" y2="465" stroke="#38bdf8" stroke-width="3.6" stroke-linecap="round" />
+      <line x1="247" y1="65" x2="242" y2="465" stroke="#e0f2fe" stroke-width="0.9" stroke-linecap="round" opacity="0.95" />
+    </g>
+
+    <!-- String 3: G (Molten Sunset Orange #f97316) -->
+    <g filter="url(#glow-soft)">
+      <line x1="264" y1="65" x2="267" y2="465" stroke="#f97316" stroke-width="3.2" stroke-linecap="round" />
+      <line x1="264" y1="65" x2="267" y2="465" stroke="#ffedd5" stroke-width="0.8" stroke-linecap="round" opacity="0.9" />
+    </g>
+
+    <!-- String 2: B (Neon Emerald #22c55e) -->
+    <g filter="url(#glow-soft)">
+      <line x1="281" y1="65" x2="291" y2="465" stroke="#22c55e" stroke-width="2.6" stroke-linecap="round" />
+      <line x1="281" y1="65" x2="291" y2="465" stroke="#bbf7d0" stroke-width="0.7" stroke-linecap="round" opacity="0.9" />
+    </g>
+
+    <!-- String 1: High e (Violet Laser #a855f7) -->
+    <g filter="url(#glow-soft)">
+      <line x1="298" y1="65" x2="316" y2="465" stroke="#a855f7" stroke-width="2.2" stroke-linecap="round" />
+      <line x1="298" y1="65" x2="316" y2="465" stroke="#f3e8ff" stroke-width="0.6" stroke-linecap="round" opacity="0.9" />
+    </g>
+  </g>
+
+  <!-- 5. Griffin Head & Wing Crest at Top (Noble Mythic Heraldry) -->
+  <g id="griffin-crest" filter="url(#glow-soft)">
+    <!-- Back Wing Feathers Sweep (Crimson & Amber) -->
+    <path d="M 256, 75 C 290, 68 335, 78 358, 102 C 330, 108 300, 104 278, 98 C 296, 110 330, 122 342, 136 C 314, 135 288, 126 270, 116 Z" fill="url(#crimson-facet)" />
+    <path d="M 256, 75 C 222, 68 177, 78 154, 102 C 182, 108 212, 104 234, 98 C 216, 110 182, 122 170, 136 C 198, 135 224, 126 242, 116 Z" fill="url(#crimson-facet)" />
+
+    <!-- Griffin Forehead Crown / Plumes -->
+    <path d="M 256, 68 L 270, 96 L 256, 112 L 242, 96 Z" fill="url(#gold-facet-light)" stroke="#fff" stroke-width="0.6" />
+    <path d="M 256, 112 L 274, 96 L 284, 124 L 264, 128 Z" fill="url(#gold-facet-dark)" />
+    <path d="M 256, 112 L 238, 96 L 228, 124 L 248, 128 Z" fill="url(#gold-facet-light)" />
+
+    <!-- Griffin Eye of Horus / Electric Vision -->
+    <polygon points="256,128 268,142 256,154 244,142" fill="#110e0b" stroke="#e2b04a" stroke-width="1.6" />
+    <circle cx="256" cy="142" r="3.2" fill="#38bdf8" filter="url(#glow-heavy)" />
+    <circle cx="256" cy="142" r="1.2" fill="#ffffff" />
+  </g>
+
+  <!-- 6. Powerful Griffin Talons (Clutching the Fretboard & Strings) -->
+  <g id="griffin-claws" filter="url(#glow-soft)">
+    <!-- Base Arm Muscle / Knuckle Hub (Right Side) -->
+    <path
+      d="M 432, 210 C 400, 205 372, 225 356, 252 C 374, 276 402, 292 432, 290 Z"
+      fill="url(#gold-facet-dark)"
+      stroke="#b45309"
+      stroke-width="1.5"
+    />
+    <path
+      d="M 430, 220 C 404, 218 382, 234 366, 256 C 378, 274 402, 284 426, 282 Z"
+      fill="url(#gold-facet-light)"
+      opacity="0.8"
+    />
+
+    <!-- TALON 1 (Upper Claw: Gripping across high strings) -->
+    <g id="talon-upper">
+      <!-- Finger Segment 1 -->
+      <path d="M 370, 228 C 342, 212 316, 204 286, 202 L 288, 218 C 314, 220 338, 226 364, 240 Z" fill="url(#gold-facet-light)" />
+      <path d="M 370, 228 L 364, 240 C 338, 226 314, 220 288, 218 L 286, 202 Z" fill="url(#gold-facet-dark)" opacity="0.6" />
+      <!-- Hooked Razor Claw Tip -->
+      <path
+        d="M 288, 202 C 266, 202 248, 212 238, 224 C 246, 227 260, 226 272, 223 C 282, 221 292, 217 296, 216 Z"
+        fill="url(#crimson-facet)"
+      />
+      <!-- Sharp Talon Edge Needle -->
+      <path d="M 240, 222 C 232, 226 226, 233 222, 238 C 228, 236 242, 230 248, 225 Z" fill="#ffffff" filter="url(#glow-heavy)" />
+    </g>
+
+    <!-- TALON 2 (Main Center Claw: Crushing the Center Fret with Maximum Torque) -->
+    <g id="talon-center">
+      <!-- Finger Segment 1 (Main Knuckle) -->
+      <path d="M 362, 256 C 330, 252 298, 254 266, 264 L 268, 282 C 298, 272 328, 270 358, 274 Z" fill="url(#gold-facet-light)" />
+      <path d="M 362, 256 L 358, 274 C 328, 270 298, 272 268, 282 L 266, 264 Z" fill="url(#gold-facet-dark)" opacity="0.5" />
+      <!-- Hooked Razor Claw Core -->
+      <path
+        d="M 268, 264 C 240, 266 218, 280 206, 296 C 218, 298 236, 294 252, 288 C 264, 284 274, 278 278, 274 Z"
+        fill="url(#crimson-facet)"
+      />
+      <!-- Razor Curved White Gold Talon Needle Tip -->
+      <path d="M 208, 294 C 198, 302 190, 312 184, 320 C 192, 314 210, 304 220, 298 Z" fill="#fdf3db" stroke="#ffffff" stroke-width="0.8" filter="url(#glow-soft)" />
+    </g>
+
+    <!-- TALON 3 (Lower Claw: Gripping the Bass Foundation) -->
+    <g id="talon-lower">
+      <!-- Finger Segment -->
+      <path d="M 368, 286 C 342, 298 320, 312 294, 330 L 298, 344 C 322, 328 344, 316 368, 304 Z" fill="url(#gold-facet-light)" />
+      <!-- Hooked Claw Tip -->
+      <path
+        d="M 296, 330 C 274, 342 258, 360 250, 376 C 259, 374 274, 366 286, 356 C 294, 348 300, 340 304, 336 Z"
+        fill="url(#crimson-facet)"
+      />
+      <!-- Talon Sharp Barb -->
+      <path d="M 252, 374 C 244, 382 238, 392 234, 400 C 240, 394 252, 384 260, 378 Z" fill="#ffffff" filter="url(#glow-heavy)" />
+    </g>
+  </g>
+
+  <!-- 7. High-Voltage Electric Lightning Bolt (Overdrive Surge) -->
+  <g id="lightning" filter="url(#glow-heavy)">
+    <polygon
+      points="
+        160,85 
+        235,178 215,182 
+        275,268 250,274 
+        310,360 286,366 
+        342,438 
+        322,382 340,376 
+        284,295 306,290 
+        246,204 268,198
+      "
+      fill="url(#bolt-grad)"
+      opacity="0.95"
+    />
+    <!-- Pure White Searing Center Spark Filament -->
+    <polyline
+      points="164,90 232,176 216,182 272,266 252,272 308,358 288,364 338,432"
+      fill="none"
+      stroke="#ffffff"
+      stroke-width="1.8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </g>
+
+  <!-- 8. Contact Sparks & Note Hit Gem Feedback -->
+  <!-- Note Hit Gem on String 4 / Fret 3 -->
+  <g transform="translate(242, 260)" filter="url(#glow-heavy)">
+    <!-- Gem Outer Glow -->
+    <rect x="-14" y="-8" width="28" height="16" rx="4" fill="#38bdf8" opacity="0.9" />
+    <rect x="-12" y="-6" width="24" height="12" rx="3" fill="#ffffff" />
+    <!-- Fret number 3 on note gem -->
+    <text x="0" y="4" font-family="'Big Shoulders Display', 'Oswald', sans-serif" font-size="11" font-weight="900" fill="#0b0907" text-anchor="middle">3</text>
+  </g>
+
+  <!-- Electric Spark Particles -->
+  <g fill="#ffffff" filter="url(#glow-soft)">
+    <!-- Starburst 1 -->
+    <path d="M 198,288 Q 206,290 214,290 Q 206,290 206,298 Q 206,290 198,290 Q 206,290 206,282 Q 206,290 198,288 Z" fill="#38bdf8" />
+    <circle cx="206" cy="290" r="2.5" fill="#ffffff" />
+
+    <!-- Starburst 2 -->
+    <path d="M 276,218 Q 282,220 288,220 Q 282,220 282,226 Q 282,220 276,220 Q 282,220 282,214 Q 282,220 276,218 Z" fill="#e2b04a" />
+    <circle cx="282" cy="220" r="2" fill="#ffffff" />
+
+    <!-- Tiny spark embers -->
+    <circle cx="178" cy="195" r="1.8" fill="#e0392b" />
+    <circle cx="318" cy="180" r="1.6" fill="#fcd34d" />
+    <circle cx="330" cy="330" r="2.2" fill="#38bdf8" />
+    <circle cx="230" cy="390" r="1.8" fill="#58c46c" />
+    <circle cx="160" cy="310" r="1.5" fill="#eab308" />
+  </g>
+
+  <!-- 9. Subtle Vintage Lens Reflection Highlight across Pick Bevel -->
+  <path
+    d="M 110, 110 C 160, 72 230, 60 290, 62 C 220, 74 160, 106 122, 154 Z"
+    fill="#ffffff"
+    opacity="0.16"
+  />
+</svg>
