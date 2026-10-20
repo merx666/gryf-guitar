@@ -13,6 +13,7 @@ import {
   Flame,
 } from 'lucide-react';
 import { sfx } from '../audio/sfxPlayer';
+import { useTranslation } from '../i18n/LanguageContext';
 
 interface ProUpgradeModalProps {
   isOpen: boolean;
@@ -25,6 +26,7 @@ export const ProUpgradeModal: React.FC<ProUpgradeModalProps> = ({
   onClose,
   onUpgradeSuccess,
 }) => {
+  const { t } = useTranslation();
   const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly' | 'lifetime'>('yearly');
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -65,15 +67,14 @@ export const ProUpgradeModal: React.FC<ProUpgradeModalProps> = ({
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-sm bg-[#e2b04a]/20 border border-[#e2b04a]/50 mb-3 shadow-[0_0_15px_rgba(226,176,74,0.3)]">
               <Crown className="w-4 h-4 text-[#e2b04a]" />
               <span className="text-xs font-['Barlow_Condensed'] uppercase tracking-[0.2em] font-bold text-[#e2b04a]">
-                OFICJALNY PAKIET PRO
+                Gryf Pro & Founder Club
               </span>
             </div>
             <h2 className="text-3xl md:text-4xl font-black font-['Big_Shoulders_Display'] uppercase tracking-tight text-[#f2ead8]">
-              ODBLOKUJ PEŁNĄ MOC GRYF PRO
+              {t('pro.title')}
             </h2>
             <p className="text-xs text-[#f2ead8]/70 font-['Barlow'] max-w-lg mx-auto mt-1">
-              Rdzeń gry pozostaje <span className="text-[#58c46c] font-bold">100% darmowy & Open Source</span>.
-              Plan PRO finansuje serwery klastra GPU dla modelu Demucs v4 i nielimitowanej chmury tabulatur.
+              {t('pro.subtitle')}
             </p>
           </div>
 
@@ -92,12 +93,12 @@ export const ProUpgradeModal: React.FC<ProUpgradeModalProps> = ({
               }`}
             >
               <div className="text-xs font-['Barlow_Condensed'] uppercase font-bold text-[#f2ead8]/60">
-                Plan Miesięczny
+                {t('pro.monthly')}
               </div>
               <div className="text-2xl font-black font-['Big_Shoulders_Display'] text-[#f2ead8] mt-1">
-                $4.99 <span className="text-xs font-['Barlow'] font-normal text-[#f2ead8]/60">/ msc</span>
+                $4.99 <span className="text-xs font-['Barlow'] font-normal text-[#f2ead8]/60">/ mo</span>
               </div>
-              <p className="text-[10px] text-[#f2ead8]/50 mt-1 font-['Barlow']">Płatność odnawiana co miesiąc</p>
+              <p className="text-[10px] text-[#f2ead8]/50 mt-1 font-['Barlow']">Billed monthly</p>
             </div>
 
             {/* 2. ROCZNY (POPULARNY) */}
@@ -113,15 +114,15 @@ export const ProUpgradeModal: React.FC<ProUpgradeModalProps> = ({
               }`}
             >
               <div className="absolute -top-2.5 right-3 px-2 py-0.5 rounded-sm bg-[#e0392b] text-white font-['Barlow_Condensed'] font-black text-[10px] uppercase tracking-wider shadow-sm">
-                OSZCZĘDZASZ 35%
+                {t('pro.savePercent')}
               </div>
               <div className="text-xs font-['Barlow_Condensed'] uppercase font-bold text-[#e2b04a]">
-                Plan Roczny (Rekomendowany)
+                {t('pro.annual')} ({t('pro.popular')})
               </div>
               <div className="text-2xl font-black font-['Big_Shoulders_Display'] text-[#f2ead8] mt-1">
-                $3.25 <span className="text-xs font-['Barlow'] font-normal text-[#f2ead8]/60">/ msc</span>
+                $3.25 <span className="text-xs font-['Barlow'] font-normal text-[#f2ead8]/60">/ mo</span>
               </div>
-              <p className="text-[10px] text-[#e2b04a] mt-1 font-['Barlow']">$39 rozliczane rocznie</p>
+              <p className="text-[10px] text-[#e2b04a] mt-1 font-['Barlow']">$39 billed annually</p>
             </div>
 
             {/* 3. LIFETIME BACKER */}
@@ -137,12 +138,12 @@ export const ProUpgradeModal: React.FC<ProUpgradeModalProps> = ({
               }`}
             >
               <div className="text-xs font-['Barlow_Condensed'] uppercase font-bold text-[#f2ead8]/60">
-                Lifetime Backer
+                {t('pro.lifetime')}
               </div>
               <div className="text-2xl font-black font-['Big_Shoulders_Display'] text-[#f2ead8] mt-1">
-                $79 <span className="text-xs font-['Barlow'] font-normal text-[#f2ead8]/60">jednorazowo</span>
+                $79 <span className="text-xs font-['Barlow'] font-normal text-[#f2ead8]/60">once</span>
               </div>
-              <p className="text-[10px] text-[#f2ead8]/50 mt-1 font-['Barlow']">Dostęp dożywotni + Złoty Badge</p>
+              <p className="text-[10px] text-[#f2ead8]/50 mt-1 font-['Barlow']">Lifetime access + Founder badge</p>
             </div>
           </div>
 
@@ -154,10 +155,7 @@ export const ProUpgradeModal: React.FC<ProUpgradeModalProps> = ({
               </div>
               <div>
                 <div className="text-xs font-bold text-[#f2ead8]">
-                  Nielimitowane przetwarzanie Demucs v4 AI w chmurze
-                </div>
-                <div className="text-[11px] text-[#f2ead8]/60 font-['Barlow']">
-                  Wklejasz MP3 lub YouTube — nasz klaster GPU separuje gitarę i generuje tabulaturę w 10 sekund.
+                  {t('pro.feature1')}
                 </div>
               </div>
             </div>
@@ -168,10 +166,7 @@ export const ProUpgradeModal: React.FC<ProUpgradeModalProps> = ({
               </div>
               <div>
                 <div className="text-xs font-bold text-[#f2ead8]">
-                  Nieograniczony Sejf Tabulatur w Chmurze
-                </div>
-                <div className="text-[11px] text-[#f2ead8]/60 font-['Barlow']">
-                  Zapisuj tysiące własnych zsynchronizowanych utworów i otwieraj na laptopie, telefonie lub tablecie.
+                  {t('pro.feature2')}
                 </div>
               </div>
             </div>
@@ -182,10 +177,7 @@ export const ProUpgradeModal: React.FC<ProUpgradeModalProps> = ({
               </div>
               <div>
                 <div className="text-xs font-bold text-[#f2ead8]">
-                  Wasm Neural Amp Modeler (NAM) Cloud IR Library
-                </div>
-                <div className="text-[11px] text-[#f2ead8]/60 font-['Barlow']">
-                  Dostęp do 500+ legendarnych profili studyjnych (Mesa Boogie, Dumble, Friedman, Marshall JCM800).
+                  {t('pro.feature3')}
                 </div>
               </div>
             </div>
@@ -196,10 +188,7 @@ export const ProUpgradeModal: React.FC<ProUpgradeModalProps> = ({
               </div>
               <div>
                 <div className="text-xs font-bold text-[#f2ead8]">
-                  Złota Odznaka "Founding Backer" w profilu i rankingach
-                </div>
-                <div className="text-[11px] text-[#f2ead8]/60 font-['Barlow']">
-                  Wspierasz rozwój najszybciej rosnącego darmowego projektu gitarowego na świecie.
+                  {t('pro.feature5')}
                 </div>
               </div>
             </div>
@@ -211,14 +200,14 @@ export const ProUpgradeModal: React.FC<ProUpgradeModalProps> = ({
             disabled={isProcessing}
             className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-sm bg-[#e2b04a] hover:bg-[#d6a53e] text-[#0b0907] font-['Big_Shoulders_Display'] uppercase font-black text-lg tracking-wider transition-all cursor-pointer shadow-[0_0_25px_rgba(226,176,74,0.5)] active:scale-[0.99] disabled:opacity-50"
           >
-            <span>{isProcessing ? 'AKTYWACJA SUBSKRYPCJI...' : 'ODBLOKUJ PAKIET PRO TERAZ'}</span>
+            <span>{isProcessing ? 'PROCESSING...' : t('pro.subscribeBtn')}</span>
             <ArrowRight className="w-5 h-5" />
           </button>
 
           {/* Gwarancja satysfakcji */}
           <div className="mt-4 flex items-center justify-center gap-2 text-[11px] text-[#f2ead8]/50 font-['Barlow']">
             <ShieldCheck className="w-4 h-4 text-[#58c46c]" />
-            <span>14 dni gwarancji zwrotu pieniędzy • Bezpieczne płatności Stripe / LemonSqueezy</span>
+            <span>{t('pro.guarantee')}</span>
           </div>
         </div>
       </div>

@@ -4,6 +4,7 @@ import { STANDARD_GUITAR_STRINGS } from '../audio/pitchDetector';
 import { audio } from '../audio/audioEngine';
 import { sfx } from '../audio/sfxPlayer';
 import { ArrowLeft, Mic, Sparkles, Activity, Volume2 } from 'lucide-react';
+import { useTranslation } from '../i18n/LanguageContext';
 
 interface TunerModalProps {
   currentPitch: PitchDetectionResult;
@@ -21,6 +22,7 @@ const STRING_COLORS: Record<number, string> = {
 };
 
 export const TunerModal: React.FC<TunerModalProps> = ({ currentPitch, onClose }) => {
+  const { t } = useTranslation();
   const [lastInTuneTime, setLastInTuneTime] = useState(0);
   const [selectedStringIndex, setSelectedStringIndex] = useState<number | null>(null);
   const strobeCanvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -164,20 +166,20 @@ export const TunerModal: React.FC<TunerModalProps> = ({ currentPitch, onClose })
           <div className="flex items-center justify-center gap-2">
             <span className="w-2 h-2 rounded-full bg-[#58c46c] animate-pulse"></span>
             <span className="text-[11px] font-['Barlow_Condensed'] uppercase tracking-[0.2em] font-bold text-[#e2b04a]">
-              Silnik Audio DSP YIN / ACF2+
+              DSP YIN / ACF2+ Engine
             </span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-black font-['Big_Shoulders_Display'] uppercase tracking-wide text-[#f2ead8] mt-0.5">
-            STROIK CHROMATYCZNY ROCKSMITH+
+            {t('tuner.title')}
           </h2>
           <p className="text-xs text-[#f2ead8]/60 font-['Barlow']">
-            Precyzja do 0.1 Hz • Prawdziwe koło stroboskopowe • Zakres basu i wiolinów
+            0.1 Hz Precision • Real Strobe Wheel • Bass & High E
           </p>
         </div>
 
         <div className="flex items-center gap-2 text-xs font-['Barlow_Condensed'] uppercase tracking-wider font-bold text-[#58c46c] bg-[#58c46c]/10 border border-[#58c46c]/30 px-3.5 py-1.5 rounded-sm">
           <Mic className="w-3.5 h-3.5 animate-pulse" />
-          <span>Słucham sygnału...</span>
+          <span>{currentPitch.detected ? 'Active' : t('header.soundDetection')}</span>
         </div>
       </div>
 
@@ -208,7 +210,7 @@ export const TunerModal: React.FC<TunerModalProps> = ({ currentPitch, onClose })
             </div>
 
             <div className="text-xs font-['Barlow_Condensed'] uppercase tracking-widest font-bold text-[#e2b04a] mt-0.5">
-              {currentPitch.detected ? `Oktawa ${currentPitch.octave}` : 'Zagraj strunę'}
+              {currentPitch.detected ? `Octave ${currentPitch.octave}` : 'Play a string'}
             </div>
 
             {currentPitch.detected && (
@@ -222,7 +224,7 @@ export const TunerModal: React.FC<TunerModalProps> = ({ currentPitch, onClose })
           {isInTune && (
             <div className="absolute -bottom-4 z-20 bg-[#58c46c] text-[#0b0907] px-5 py-1 rounded-full font-['Barlow_Condensed'] font-black text-xs uppercase tracking-widest flex items-center gap-1.5 shadow-lg shadow-[#58c46c]/40 animate-bounce">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>IDEALNY STRÓJ!</span>
+              <span>{t('tuner.inTune')}!</span>
             </div>
           )}
         </div>
@@ -230,9 +232,9 @@ export const TunerModal: React.FC<TunerModalProps> = ({ currentPitch, onClose })
         {/* Miernik centów (-50 do +50) */}
         <div className="w-full max-w-lg bg-[#110e0b] p-6 rounded-sm border border-[#f2ead8]/12 shadow-2xl">
           <div className="flex justify-between text-xs font-['Barlow_Condensed'] uppercase tracking-wider font-bold text-[#f2ead8]/60 mb-2">
-            <span>-50¢ (Za nisko / Naciągnij)</span>
+            <span>-50¢ ({t('tuner.flat')})</span>
             <span className="font-bold text-[#f2ead8] text-sm">0¢</span>
-            <span>+50¢ (Za wysoko / Poluźnij)</span>
+            <span>+50¢ ({t('tuner.sharp')})</span>
           </div>
 
           {/* Skala suwaka */}

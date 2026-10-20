@@ -3,6 +3,7 @@ import { Play, Pause, RotateCcw, ArrowLeft, Flame, Sparkles, CheckCircle2 } from
 import { audio } from '../audio/audioEngine';
 import { sfx } from '../audio/sfxPlayer';
 import { PitchDetectionResult, NoteHit } from '../types';
+import { useTranslation } from '../i18n/LanguageContext';
 
 interface HighwayViewProps {
   songTitle: string;
@@ -45,6 +46,7 @@ export const HighwayView: React.FC<HighwayViewProps> = ({
   onExit,
   onSongComplete,
 }) => {
+  const { t } = useTranslation();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // Stan rozgrywki
@@ -159,12 +161,12 @@ export const HighwayView: React.FC<HighwayViewProps> = ({
     if (isPerfect) {
       statsRef.current.perfectHits++;
       sfx.play('hit_perfect');
-      triggerFeedback('IDEALNIE!', '#58c46c');
+      triggerFeedback(t('highway.perfect'), '#58c46c');
       spawnSparks(item.note.string, '#58c46c', 24);
     } else {
       statsRef.current.goodHits++;
       sfx.play('hit_good');
-      triggerFeedback('DOBRZE!', '#e2b04a');
+      triggerFeedback(t('highway.good'), '#e2b04a');
       spawnSparks(item.note.string, '#e2b04a', 14);
     }
 
@@ -215,7 +217,7 @@ export const HighwayView: React.FC<HighwayViewProps> = ({
     setStreak(0);
     setMultiplier(1);
     sfx.play('hit_miss');
-    triggerFeedback('PUDŁO', '#e0392b');
+    triggerFeedback(t('highway.miss'), '#e0392b');
     updateAccuracyAndStars();
   };
 
@@ -572,7 +574,7 @@ export const HighwayView: React.FC<HighwayViewProps> = ({
             className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#1a1612] hover:bg-[#25201a] text-[#f2ead8] text-xs font-bold uppercase tracking-wider transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>Wyjdź</span>
+            <span>{t('highway.exit')}</span>
           </button>
           <div>
             <h2 className="font-['Big_Shoulders_Display'] text-xl font-black uppercase text-white flex items-center gap-2 leading-none">
@@ -582,7 +584,7 @@ export const HighwayView: React.FC<HighwayViewProps> = ({
               </span>
             </h2>
             <p className="text-[11px] text-[#f2ead870] mt-0.5">
-              Tempo: {tempo} BPM • Czas: {Math.floor(currentSongTime)}s / {Math.floor(songDuration)}s
+              Tempo: {tempo} BPM • {Math.floor(currentSongTime)}s / {Math.floor(songDuration)}s
             </p>
           </div>
         </div>
@@ -591,7 +593,7 @@ export const HighwayView: React.FC<HighwayViewProps> = ({
         <div className="flex items-center gap-6">
           <div className="text-right">
             <span className="text-[10px] text-[#f2ead870] font-['Barlow_Condensed'] uppercase tracking-widest block leading-none">
-              WYNIK
+              {t('highway.score')}
             </span>
             <span className="text-2xl font-black text-[#e2b04a] font-mono tracking-wider leading-none">
               {score.toLocaleString()}
@@ -601,7 +603,7 @@ export const HighwayView: React.FC<HighwayViewProps> = ({
           <div className="flex items-center gap-2 px-3 py-1 rounded-xl bg-[#1a1612] border border-[#f2ead821]">
             <Flame className="w-4 h-4 text-orange-500 animate-pulse" />
             <div>
-              <span className="text-[9px] text-[#f2ead870] block leading-none uppercase font-bold">SERIA</span>
+              <span className="text-[9px] text-[#f2ead870] block leading-none uppercase font-bold">{t('highway.streak')}</span>
               <span className="text-sm font-bold text-white leading-none">{streak}</span>
             </div>
             <div className="ml-1.5 px-2 py-0.5 rounded bg-[#e0392b] text-white font-black text-xs font-mono">
@@ -644,12 +646,12 @@ export const HighwayView: React.FC<HighwayViewProps> = ({
           <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
           <div className="text-xs">
             <span className="text-[10px] text-[#f2ead870] block font-['Barlow_Condensed'] uppercase tracking-wider">
-              Detekcja Gitary
+              {t('header.soundDetection')}
             </span>
             <span className="font-bold text-white font-mono">
               {detectedPitch?.detected
                 ? `${detectedPitch.noteName}${detectedPitch.octave} (${Math.round(detectedPitch.frequency)}Hz)`
-                : 'Słucham dźwięków...'}
+                : t('header.micOnDesc')}
             </span>
           </div>
         </div>
@@ -660,14 +662,14 @@ export const HighwayView: React.FC<HighwayViewProps> = ({
             <button
               key={name}
               onClick={() => handleStringClick(sIdx)}
-              className="px-4 py-2 rounded-xl font-black text-xs uppercase tracking-wider transition-all shadow-md active:scale-95"
+              className="px-4 py-2 rounded-xl font-black text-xs uppercase tracking-wider transition-all shadow-md active:scale-95 cursor-pointer"
               style={{
                 backgroundColor: STRING_COLORS[sIdx] + '22',
                 border: `2px solid ${STRING_COLORS[sIdx]}`,
                 color: '#ffffff',
               }}
             >
-              Struna {name}
+              {name}
             </button>
           ))}
         </div>
@@ -678,18 +680,18 @@ export const HighwayView: React.FC<HighwayViewProps> = ({
         <div className="flex items-center gap-3">
           <button
             onClick={togglePlay}
-            className="flex items-center gap-2 px-5 py-2 rounded-xl bg-[#e0392b] hover:bg-[#c8281e] text-white font-black text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all"
+            className="flex items-center gap-2 px-5 py-2 rounded-xl bg-[#e0392b] hover:bg-[#c8281e] text-white font-black text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all cursor-pointer"
           >
             {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 fill-white" />}
-            {isPlaying ? 'Pauza' : 'Graj'}
+            {isPlaying ? t('highway.pause') : t('highway.resume')}
           </button>
 
           <button
             onClick={restartSong}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#1a1612] hover:bg-[#25201a] text-[#f2ead8] text-xs font-bold transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#1a1612] hover:bg-[#25201a] text-[#f2ead8] text-xs font-bold transition-colors cursor-pointer"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            Od nowa
+            {t('highway.restart')}
           </button>
 
           <div className="flex items-center bg-[#1a1612] rounded-xl p-1 text-xs">
@@ -697,7 +699,7 @@ export const HighwayView: React.FC<HighwayViewProps> = ({
               <button
                 key={speed}
                 onClick={() => setPlaybackSpeed(speed)}
-                className={`px-2.5 py-1 rounded-lg font-mono font-medium transition-colors ${
+                className={`px-2.5 py-1 rounded-lg font-mono font-medium transition-colors cursor-pointer ${
                   playbackSpeed === speed ? 'bg-[#e0392b] text-white font-bold' : 'text-[#f2ead870] hover:text-white'
                 }`}
               >
@@ -710,7 +712,7 @@ export const HighwayView: React.FC<HighwayViewProps> = ({
         <div className="flex items-center gap-4 text-xs text-[#f2ead870]">
           <div className="flex items-center gap-1.5">
             <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-            <span>Dokładność: <strong className="text-white">{accuracy}%</strong></span>
+            <span>{t('highway.accuracy')}: <strong className="text-white">{accuracy}%</strong></span>
           </div>
           <div className="h-4 w-[1px] bg-[#f2ead821]" />
           <span>Rocksmith+ 3D • 60/120 FPS</span>

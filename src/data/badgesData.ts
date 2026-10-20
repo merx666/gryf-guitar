@@ -1,25 +1,37 @@
-import { Badge, PlayerRank } from '../types';
+import { Badge } from '../types';
+import { TranslationKey } from '../i18n/translations';
 
-export const PLAYER_RANKS: [number, string][] = [
-  [1, 'Gitarzysta Sypialniany'],
-  [3, 'Garażowy Debiutant'],
-  [6, 'Bywalec Open Mic'],
-  [9, 'Support Sceniczny'],
-  [13, 'Gwiazda Klubowa'],
-  [17, 'Wyjadacz Tras'],
-  [21, 'Gitarzysta Sesyjny'],
-  [26, 'Headliner'],
-  [32, 'Weteran Aren'],
-  [40, 'Mistrz Riffu'],
-  [50, 'Żywa Legenda'],
+export const PLAYER_RANKS_KEYS: [number, TranslationKey, string][] = [
+  [1, 'rank.bedroom', 'Gitarzysta Sypialniany'],
+  [3, 'rank.garage', 'Garażowy Debiutant'],
+  [6, 'rank.openmic', 'Bywalec Open Mic'],
+  [9, 'rank.support', 'Support Sceniczny'],
+  [13, 'rank.club', 'Gwiazda Klubowa'],
+  [17, 'rank.touring', 'Wyjadacz Tras'],
+  [21, 'rank.session', 'Gitarzysta Sesyjny'],
+  [26, 'rank.headliner', 'Headliner'],
+  [32, 'rank.arena', 'Weteran Aren'],
+  [40, 'rank.riffmaster', 'Mistrz Riffu'],
+  [50, 'rank.legend', 'Żywa Legenda'],
 ];
 
-export function getRankTitle(level: number): string {
-  let title = PLAYER_RANKS[0][1];
-  for (const [lvl, name] of PLAYER_RANKS) {
-    if (level >= lvl) title = name;
+export const PLAYER_RANKS: [number, string][] = PLAYER_RANKS_KEYS.map(([lvl, _, name]) => [lvl, name]);
+
+export function getRankTitle(level: number, t?: (key: TranslationKey) => string): string {
+  let matchedKey: TranslationKey = PLAYER_RANKS_KEYS[0][1];
+  let defaultName = PLAYER_RANKS_KEYS[0][2];
+
+  for (const [lvl, key, name] of PLAYER_RANKS_KEYS) {
+    if (level >= lvl) {
+      matchedKey = key;
+      defaultName = name;
+    }
   }
-  return title;
+
+  if (t) {
+    return t(matchedKey);
+  }
+  return defaultName;
 }
 
 export function getXpForLevel(level: number): number {

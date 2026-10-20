@@ -2,6 +2,9 @@ import React, { useRef, useEffect } from 'react';
 import { ScreenName, PlayerRank, PitchDetectionResult, UserProfile } from '../types';
 import { Sliders, Music, Award, Flame, Sparkles, Volume2, User, Crown, LogIn } from 'lucide-react';
 import { sfx } from '../audio/sfxPlayer';
+import { useTranslation } from '../i18n/LanguageContext';
+import { LanguageSelector } from './LanguageSelector';
+import { getRankTitle } from '../data/badgesData';
 
 export interface HeaderProps {
   currentScreen: ScreenName;
@@ -40,6 +43,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAuth,
   onOpenProUpgrade,
 }) => {
+  const { t, currentLanguageInfo } = useTranslation();
   const isMic = isMicActive ?? detectionEnabled ?? false;
   const toggle = onToggleMic ?? onToggleDetection ?? (() => {});
   const activeRank =
@@ -55,6 +59,7 @@ export const Header: React.FC<HeaderProps> = ({
       badgesTotal: 122,
     };
   const pitch = detectedPitch ?? currentPitch ?? null;
+  const localizedRankTitle = getRankTitle(activeRank.level, t);
 
   // Animacja canvasu fali dźwiękowej przy logo
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -117,7 +122,7 @@ export const Header: React.FC<HeaderProps> = ({
                 GRYF
               </span>
               <span className="text-[10px] font-['Barlow_Condensed'] font-black uppercase tracking-widest px-1.5 py-0.5 rounded bg-[#e0392b22] text-[#e0392b] border border-[#e0392b44]">
-                PL
+                {currentLanguageInfo.code.toUpperCase()}
               </span>
             </div>
             {/* Animowana miniatura fali dźwiękowej */}
@@ -138,14 +143,14 @@ export const Header: React.FC<HeaderProps> = ({
               ? 'bg-[#15110d] border-emerald-500/50 shadow-sm shadow-emerald-950/40'
               : 'bg-[#110e0b] border-[#f2ead821] hover:border-[#f2ead84d]'
           }`}
-          title={isMic ? 'Wykrywanie aktywne: graj na żywo na swojej gitarze' : 'Włącz mikrofon'}
+          title={isMic ? t('header.micTooltipOn') : t('header.micTooltipOff')}
         >
           <div className="text-left">
             <span className="text-[11px] font-bold text-[#f2ead8] block leading-none font-['Barlow_Condensed'] uppercase tracking-wider">
-              Wykrywanie Dźwięku
+              {t('header.soundDetection')}
             </span>
             <span className="text-[10px] text-[#f2ead870] block leading-none mt-0.5 font-['Barlow']">
-              {isMic ? 'Wł. • słucha Twojej gitary' : 'Wył. • piosenki grają Twoją partię'}
+              {isMic ? t('header.micOnDesc') : t('header.micOffDesc')}
             </span>
           </div>
 
@@ -189,14 +194,14 @@ export const Header: React.FC<HeaderProps> = ({
           }`}
         >
           <Sparkles className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">Studio AI</span>
+          <span className="hidden sm:inline">{t('header.aiStudio')}</span>
         </button>
 
         {/* Status Gryf PRO lub Przycisk Ulepsz */}
         {userProfile?.tier === 'pro' || userProfile?.tier === 'lifetime' ? (
           <div className="flex items-center gap-1 px-2.5 py-1 rounded-sm bg-[#e2b04a]/20 border border-[#e2b04a]/50 text-[#e2b04a] text-[11px] font-['Barlow_Condensed'] font-black uppercase tracking-wider shadow-[0_0_10px_rgba(226,176,74,0.3)]">
             <Crown className="w-3.5 h-3.5 fill-[#e2b04a]" />
-            <span>{userProfile.tier === 'lifetime' ? 'FOUNDER' : 'PRO'}</span>
+            <span>{userProfile.tier === 'lifetime' ? t('header.founder') : t('header.pro')}</span>
           </div>
         ) : (
           <button
@@ -207,7 +212,7 @@ export const Header: React.FC<HeaderProps> = ({
             className="flex items-center gap-1 px-2.5 py-1 rounded-sm bg-[#e0392b] hover:bg-[#c93226] text-white text-[11px] font-['Barlow_Condensed'] font-black uppercase tracking-wider transition-all cursor-pointer shadow-[0_0_15px_rgba(224,57,43,0.4)] animate-pulse"
           >
             <Crown className="w-3 h-3 fill-white" />
-            <span>ULEPSZ DO PRO</span>
+            <span>{t('header.upgradePro')}</span>
           </button>
         )}
 
@@ -221,7 +226,7 @@ export const Header: React.FC<HeaderProps> = ({
           className="px-2.5 py-1.5 rounded-sm bg-[#14110e] border border-[#f2ead821] hover:border-[#f2ead84d] text-xs font-bold text-[#f2ead8] flex items-center gap-1.5 transition-colors cursor-pointer"
         >
           <Sliders className="w-3.5 h-3.5 text-[#e0392b]" />
-          <span className="hidden md:inline">Stroik</span>
+          <span className="hidden md:inline">{t('header.tuner')}</span>
         </button>
 
         {/* Gryf */}
@@ -234,8 +239,11 @@ export const Header: React.FC<HeaderProps> = ({
           className="px-2.5 py-1.5 rounded-sm bg-[#14110e] border border-[#f2ead821] hover:border-[#f2ead84d] text-xs font-bold text-[#f2ead8] flex items-center gap-1.5 transition-colors cursor-pointer"
         >
           <Music className="w-3.5 h-3.5 text-sky-400" />
-          <span className="hidden md:inline">Gryf</span>
+          <span className="hidden md:inline">{t('header.fretboard')}</span>
         </button>
+
+        {/* Przełącznik języka (Global i18n Selector) */}
+        <LanguageSelector />
 
         {/* Logowanie / Avatar Użytkownika */}
         {userProfile ? (
@@ -245,7 +253,7 @@ export const Header: React.FC<HeaderProps> = ({
               if (onOpenAuth) onOpenAuth();
             }}
             className="flex items-center gap-2 pl-2 pr-2.5 py-1 rounded-sm bg-[#181410] border border-[#f2ead821] hover:border-[#e2b04a] transition-all cursor-pointer"
-            title={`Zalogowano jako ${userProfile.name} (${userProfile.provider})`}
+            title={`Logged in as ${userProfile.name} (${userProfile.provider})`}
           >
             {userProfile.avatarUrl ? (
               <img
@@ -271,7 +279,7 @@ export const Header: React.FC<HeaderProps> = ({
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-[#1a1612] hover:bg-[#241e18] border border-[#f2ead8]/20 hover:border-[#f2ead8]/50 text-xs font-['Barlow_Condensed'] uppercase tracking-wider font-bold text-[#f2ead8] transition-all cursor-pointer"
           >
             <LogIn className="w-3.5 h-3.5 text-[#e2b04a]" />
-            <span>ZALOGUJ</span>
+            <span>{t('header.login')}</span>
           </button>
         )}
 
@@ -284,16 +292,16 @@ export const Header: React.FC<HeaderProps> = ({
           className="flex items-center gap-2 pl-2 pr-3 py-1 rounded-sm bg-[#14110e] border border-[#f2ead821] hover:border-[#f2ead84d] transition-colors cursor-pointer text-left"
         >
           <div className="px-2 py-0.5 rounded-sm bg-[#251e18] border border-[#f2ead821] text-center font-['Barlow_Condensed'] font-black text-xs text-[#e2b04a]">
-            Lv {activeRank.level}
+            {t('header.level')} {activeRank.level}
           </div>
           <div className="hidden lg:block">
             <div className="text-xs font-bold text-[#f2ead8] font-['Barlow_Condensed'] uppercase tracking-wider leading-none">
-              {activeRank.title}
+              {localizedRankTitle}
             </div>
             <div className="text-[10px] text-[#f2ead870] flex items-center gap-1.5 mt-0.5 leading-none">
               <span className="text-[#e2b04a]">★ {activeRank.starsEarned}/{activeRank.starsTotal}</span>
               <span>•</span>
-              <span>{activeRank.badgesEarned} odznak</span>
+              <span>{activeRank.badgesEarned} {t('header.badges')}</span>
             </div>
           </div>
         </button>

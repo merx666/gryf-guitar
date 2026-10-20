@@ -15,6 +15,7 @@ import {
 import { TourSong } from '../types';
 import { TOUR_SONGS } from '../data/tourData';
 import { sfx } from '../audio/sfxPlayer';
+import { useTranslation } from '../i18n/LanguageContext';
 
 interface SongsViewProps {
   onBack: () => void;
@@ -171,14 +172,15 @@ export const SongsView: React.FC<SongsViewProps> = ({
   onOpenAiStudio,
   earnedStars,
 }) => {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedGenre, setSelectedGenre] = useState<string>('Wszystkie');
+  const [selectedGenre, setSelectedGenre] = useState<string>('ALL');
 
   const allSongs = useMemo(() => {
     return [...TOUR_SONGS, ...EXTRA_ROCK_SONGS];
   }, []);
 
-  const genres = ['Wszystkie', 'Rock', 'Hard Rock', 'Metal', 'Grunge', 'Blues Rock', 'Polski Rock', 'Classic Rock'];
+  const genres = ['ALL', 'Rock', 'Hard Rock', 'Metal', 'Grunge', 'Blues Rock', 'Classic Rock'];
 
   const filteredSongs = useMemo(() => {
     return allSongs.filter((song) => {
@@ -187,7 +189,7 @@ export const SongsView: React.FC<SongsViewProps> = ({
         song.artist.toLowerCase().includes(searchQuery.toLowerCase()) ||
         song.genre.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesGenre =
-        selectedGenre === 'Wszystkie' ||
+        selectedGenre === 'ALL' ||
         song.genre.toLowerCase().includes(selectedGenre.toLowerCase());
       return matchesSearch && matchesGenre;
     });
@@ -206,20 +208,20 @@ export const SongsView: React.FC<SongsViewProps> = ({
             className="flex items-center gap-2 px-4 py-2.5 rounded-sm bg-[#110e0b] border border-[#f2ead8]/15 hover:border-[#e0392b] text-[#f2ead8]/80 hover:text-white transition-all cursor-pointer font-['Barlow_Condensed'] uppercase tracking-wider text-sm font-bold shadow-md hover:shadow-[0_0_15px_rgba(224,57,43,0.3)]"
           >
             <ArrowLeft className="w-4 h-4 text-[#e0392b]" />
-            <span>Menu Główne</span>
+            <span>←</span>
           </button>
           <div>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#e0392b] animate-pulse"></span>
               <span className="text-[11px] font-['Barlow_Condensed'] uppercase tracking-[0.2em] font-bold text-[#e2b04a]">
-                Katalog Utworów Rocksmith+
+                Gryf • Rocksmith+ Audio Stems
               </span>
             </div>
             <h1 className="text-3xl md:text-4xl font-black font-['Big_Shoulders_Display'] uppercase tracking-tight text-[#f2ead8] leading-none mt-1">
-              BIBLIOTEKA UTWORÓW & TABULATUR
+              {t('songs.title')}
             </h1>
             <p className="text-xs text-[#f2ead8]/60 mt-1 font-['Barlow']">
-              Dostępnych {allSongs.length} utworów ze zsynchronizowaną autostradą 3D i separacją ścieżek
+              {t('songs.subtitle')} ({allSongs.length} tracks)
             </p>
           </div>
         </div>
@@ -233,7 +235,7 @@ export const SongsView: React.FC<SongsViewProps> = ({
             className="flex items-center gap-2 px-4 py-2.5 rounded-sm bg-[#1a1612] text-[#e2b04a] border border-[#e2b04a]/30 hover:border-[#e2b04a] hover:bg-[#241e18] transition-all font-['Barlow_Condensed'] font-bold text-xs uppercase tracking-wider cursor-pointer shadow-lg hover:shadow-[0_0_20px_rgba(226,176,74,0.3)]"
           >
             <FolderUp className="w-4 h-4" />
-            Wgraj Własny Plik (.gp / .gpx)
+            {t('menu.importTab')}
           </button>
         </div>
       </div>
@@ -244,7 +246,7 @@ export const SongsView: React.FC<SongsViewProps> = ({
           <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#f2ead8]/40" />
           <input
             type="text"
-            placeholder="Szukaj utworu, wykonawcy lub gatunku..."
+            placeholder={t('songs.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 rounded-sm bg-[#080605] border border-[#f2ead8]/15 text-sm text-[#f2ead8] placeholder-[#f2ead8]/40 focus:outline-none focus:border-[#e2b04a] focus:ring-1 focus:ring-[#e2b04a]/50 transition-all font-['Barlow']"
@@ -266,7 +268,7 @@ export const SongsView: React.FC<SongsViewProps> = ({
                   : 'bg-[#110e0b] border border-[#f2ead8]/10 text-[#f2ead8]/70 hover:text-white hover:border-[#f2ead8]/30'
               }`}
             >
-              {genre}
+              {genre === 'ALL' ? t('songs.allGenres') : genre}
             </button>
           ))}
         </div>
@@ -364,10 +366,10 @@ export const SongsView: React.FC<SongsViewProps> = ({
                       onOpenAiStudio(song);
                     }}
                     className="flex items-center gap-1.5 px-3 py-2 rounded-sm bg-[#1c1712] border border-[#e2b04a]/30 hover:border-[#e2b04a] text-[#e2b04a] hover:bg-[#e2b04a]/10 font-['Barlow_Condensed'] font-bold text-xs uppercase tracking-wider transition-all cursor-pointer"
-                    title="Przejdź do studia AI, miksuj stemy i edytuj tabulaturę"
+                    title="AI Studio & Stem Separation"
                   >
                     <Wand2 className="w-3.5 h-3.5" />
-                    <span>Studio AI & Stemy</span>
+                    <span>{t('songs.openInStudio')}</span>
                   </button>
                 )}
 
@@ -380,7 +382,7 @@ export const SongsView: React.FC<SongsViewProps> = ({
                   className="ml-auto flex items-center gap-2 px-6 py-2.5 rounded-sm bg-[#e0392b] hover:bg-[#c93226] text-white font-['Big_Shoulders_Display'] uppercase font-black text-sm tracking-wider transition-all cursor-pointer shadow-[0_0_20px_rgba(224,57,43,0.4)] hover:shadow-[0_0_25px_rgba(224,57,43,0.7)] active:scale-95"
                 >
                   <Play className="w-4 h-4 fill-white" />
-                  <span>GRAJ NA AUTOSTRADZIE</span>
+                  <span>{t('songs.playNow')}</span>
                 </button>
               </div>
             </div>

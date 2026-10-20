@@ -19,6 +19,8 @@ import {
 } from 'lucide-react';
 import { ScreenName, PlayerRank } from '../types';
 import { sfx } from '../audio/sfxPlayer';
+import { useTranslation } from '../i18n/LanguageContext';
+import { getRankTitle } from '../data/badgesData';
 
 interface MainMenuProps {
   onNavigate: (screen: ScreenName) => void;
@@ -41,8 +43,10 @@ export const MainMenu: React.FC<MainMenuProps> = ({
   isMicActive,
   onToggleMic,
 }) => {
+  const { t } = useTranslation();
   // Aktywny rozwinięty plaster sceniczny (0 = Graj, 1 = Piosenki, 2 = Studio AI, 3 = Sprzęt, 4 = Profil)
   const [activeSlice, setActiveSlice] = useState<number>(0);
+  const localizedRankTitle = getRankTitle(playerRank.level, t);
 
   const handleNav = (screen: ScreenName) => {
     sfx.play('select');
@@ -76,16 +80,16 @@ export const MainMenu: React.FC<MainMenuProps> = ({
 
           {/* Pionowa zakładka (gdy plaster jest zwinięty) */}
           <div className="slice-tab">
-            <span className="slice-tab-badge">3 pozycje</span>
-            <span className="slice-tab-title">Graj</span>
+            <span className="slice-tab-badge">3</span>
+            <span className="slice-tab-title">{t('menu.play')}</span>
             <Compass className="w-8 h-8 text-[#f2ead8] stroke-[1.8]" />
           </div>
 
           {/* Rozwinięta zawartość */}
           <div className="slice-body">
             <div>
-              <div className="slice-header-subtitle">Scena • Kampania & Szkoła</div>
-              <h2 className="slice-header-title">Graj</h2>
+              <div className="slice-header-subtitle">Tour • Highway & Modes</div>
+              <h2 className="slice-header-title">{t('menu.play')}</h2>
 
               <div className="menu-row">
                 <button
@@ -170,15 +174,15 @@ export const MainMenu: React.FC<MainMenuProps> = ({
           <div className="slice-shade" />
 
           <div className="slice-tab">
-            <span className="slice-tab-badge">571 utworów</span>
-            <span className="slice-tab-title">Piosenki</span>
+            <span className="slice-tab-badge">571</span>
+            <span className="slice-tab-title">{t('menu.songs')}</span>
             <Music className="w-8 h-8 text-[#f2ead8] stroke-[1.8]" />
           </div>
 
           <div className="slice-body">
             <div>
-              <div className="slice-header-subtitle">Katalog & Tabulatury</div>
-              <h2 className="slice-header-title">Piosenki</h2>
+              <div className="slice-header-subtitle">Catalog & Master Tracks</div>
+              <h2 className="slice-header-title">{t('menu.songs')}</h2>
 
               <div className="menu-row">
                 <button
@@ -262,16 +266,16 @@ export const MainMenu: React.FC<MainMenuProps> = ({
 
           <div className="slice-tab">
             <span className="slice-tab-badge border-[#e2b04a66] text-[#e2b04a]">PRO • AI</span>
-            <span className="slice-tab-title text-[#e2b04a]">Studio AI</span>
+            <span className="slice-tab-title text-[#e2b04a]">{t('menu.aiStudio')}</span>
             <Sparkles className="w-8 h-8 text-[#e2b04a] stroke-[1.8]" />
           </div>
 
           <div className="slice-body">
             <div>
               <div className="slice-header-subtitle text-[#e2b04a] flex items-center gap-1.5">
-                <Sparkles className="w-4 h-4" /> Nowość • Automatyczna Transkrypcja MP3 & Crawler
+                <Sparkles className="w-4 h-4" /> Demucs v4 AI Stem Separation & Neural Tabs
               </div>
-              <h2 className="slice-header-title text-[#f2ead8]">Studio AI</h2>
+              <h2 className="slice-header-title text-[#f2ead8]">{t('menu.aiStudio')}</h2>
 
               <div className="menu-row">
                 <button
@@ -352,15 +356,15 @@ export const MainMenu: React.FC<MainMenuProps> = ({
           <div className="slice-shade" />
 
           <div className="slice-tab">
-            <span className="slice-tab-badge">Lampowy DSP</span>
-            <span className="slice-tab-title">Sprzęt</span>
+            <span className="slice-tab-badge">DSP</span>
+            <span className="slice-tab-title">{t('menu.gear')}</span>
             <Sliders className="w-8 h-8 text-[#f2ead8] stroke-[1.8]" />
           </div>
 
           <div className="slice-body">
             <div>
-              <div className="slice-header-subtitle">Brzmienie & Wzmacniacz</div>
-              <h2 className="slice-header-title">Sprzęt</h2>
+              <div className="slice-header-subtitle">Neural Amp Modeler & DSP Rig</div>
+              <h2 className="slice-header-title">{t('menu.gear')}</h2>
 
               <div className="menu-row">
                 <button
@@ -443,15 +447,15 @@ export const MainMenu: React.FC<MainMenuProps> = ({
           <div className="slice-shade" />
 
           <div className="slice-tab">
-            <span className="slice-tab-badge">Poziom {playerRank.level}</span>
-            <span className="slice-tab-title">Twój Profil</span>
+            <span className="slice-tab-badge">{t('header.level')} {playerRank.level}</span>
+            <span className="slice-tab-title">{t('menu.profile')}</span>
             <Trophy className="w-8 h-8 text-[#f2ead8] stroke-[1.8]" />
           </div>
 
           <div className="slice-body">
             <div>
-              <div className="slice-header-subtitle">Kariera Muzyczna & Statystyki</div>
-              <h2 className="slice-header-title">Twój Profil</h2>
+              <div className="slice-header-subtitle">Career, Stats & Badges</div>
+              <h2 className="slice-header-title">{t('menu.profile')}</h2>
 
               <div className="menu-row">
                 <button
@@ -507,14 +511,14 @@ export const MainMenu: React.FC<MainMenuProps> = ({
 
             <div className="slice-facts">
               <div className="slice-fact-item">
-                <span className="slice-fact-val">Poziom {playerRank.level}</span>
-                <span className="slice-fact-lbl">{playerRank.title}</span>
+                <span className="slice-fact-val">{t('header.level')} {playerRank.level}</span>
+                <span className="slice-fact-lbl">{localizedRankTitle}</span>
               </div>
               <div className="slice-fact-item">
                 <span className="slice-fact-val">
                   <em>3</em> / 122
                 </span>
-                <span className="slice-fact-lbl">Zdobyte Odznaki</span>
+                <span className="slice-fact-lbl">{t('profile.badges')}</span>
               </div>
             </div>
           </div>
@@ -530,24 +534,19 @@ export const MainMenu: React.FC<MainMenuProps> = ({
           <span className="px-1.5 py-0.5 rounded bg-[#1e1b18] border border-[#f2ead821] text-[#f2ead8] font-mono text-[10px]">
             →
           </span>
-          <span>Wybierz sekcję</span>
-          <span className="mx-2 text-[#f2ead821]">·</span>
-          <span className="px-2 py-0.5 rounded bg-[#1e1b18] border border-[#f2ead821] text-[#f2ead8] font-mono text-[10px]">
-            Enter
-          </span>
-          <span>Otwórz</span>
+          <span>{t('menu.footerTagline')}</span>
         </div>
 
         <div className="hidden md:flex items-center gap-3 text-[#f2ead8b3]">
           <span className="text-[#e2b04a] font-bold">Guitar Pro 3 – 8</span>
           <span>·</span>
-          <span>Gitara Prowadząca</span>
+          <span>Lead</span>
           <span>·</span>
-          <span>Rytmiczna</span>
+          <span>Rhythm</span>
           <span>·</span>
-          <span>Bas</span>
+          <span>Bass</span>
           <span>·</span>
-          <span className="text-[#e0392b] font-bold">MP3 / WAV AI Audio Sync</span>
+          <span className="text-[#e0392b] font-bold">Demucs v4 Audio Sync</span>
         </div>
 
         {/* Szybkie skróty narzędziowe */}
@@ -557,7 +556,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
             className="flex items-center gap-1.5 text-[#f2ead8] hover:text-[#e2b04a] transition-colors"
           >
             <Activity className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Stroik</span>
+            <span>{t('header.tuner')}</span>
           </button>
           <span className="text-[#f2ead821]">·</span>
           <button
@@ -565,7 +564,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
             className="flex items-center gap-1.5 text-[#f2ead8] hover:text-[#e2b04a] transition-colors"
           >
             <Guitar className="w-3.5 h-3.5 text-sky-400" />
-            <span>Gryf</span>
+            <span>{t('header.fretboard')}</span>
           </button>
           <span className="text-[#f2ead821]">·</span>
           <button
@@ -573,7 +572,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
             className="flex items-center gap-1.5 text-[#f2ead8] hover:text-[#e2b04a] transition-colors"
           >
             <Flame className="w-3.5 h-3.5 text-amber-400" />
-            <span>Opóźnienie</span>
+            <span>{t('menu.calibration')}</span>
           </button>
         </div>
       </footer>

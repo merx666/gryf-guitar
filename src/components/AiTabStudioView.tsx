@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { NoteHit, AiTranscriptionResult, TabOnlineMatch, TourSong } from '../types';
 import { sfx } from '../audio/sfxPlayer';
+import { useTranslation } from '../i18n/LanguageContext';
 
 interface AiTabStudioViewProps {
   onBack: () => void;
@@ -29,6 +30,7 @@ interface AiTabStudioViewProps {
 }
 
 export const AiTabStudioView: React.FC<AiTabStudioViewProps> = ({ onBack, onPlaySong, initialSong }) => {
+  const { t } = useTranslation();
   const [file, setFile] = useState<File | null>(null);
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [status, setStatus] = useState<
@@ -209,14 +211,14 @@ export const AiTabStudioView: React.FC<AiTabStudioViewProps> = ({ onBack, onPlay
           <div>
             <div className="flex items-center gap-2.5">
               <h1 className="font-['Big_Shoulders_Display'] text-3xl md:text-4xl font-black uppercase tracking-wide text-[#f2ead8]">
-                Studio AI • Audio do Tabulatury
+                {t('aiStudio.title')}
               </h1>
               <span className="px-2.5 py-0.5 rounded-full text-[11px] font-black uppercase tracking-widest bg-[#e2b04a22] text-[#e2b04a] border border-[#e2b04a55] flex items-center gap-1">
                 <Sparkles className="w-3 h-3" /> PRO
               </span>
             </div>
             <p className="text-xs text-[#f2ead8b3] mt-0.5">
-              Wrzuć dowolny plik MP3/WAV lub link YouTube. Nasze algorytmy AI wydzielą gitarę, wyszukają taby w sieci i automatycznie zsynchronizują nuty.
+              {t('aiStudio.subtitle')}
             </p>
           </div>
         </div>
@@ -224,15 +226,15 @@ export const AiTabStudioView: React.FC<AiTabStudioViewProps> = ({ onBack, onPlay
         {/* Status konta PRO */}
         <div className="flex items-center gap-3">
           <div className="text-right hidden sm:block">
-            <span className="text-[10px] uppercase font-bold tracking-widest text-[#f2ead870] block">Dostęp</span>
-            <span className="text-xs font-bold text-[#e2b04a]">1 z 1 darmowych konwersji</span>
+            <span className="text-[10px] uppercase font-bold tracking-widest text-[#f2ead870] block">Access</span>
+            <span className="text-xs font-bold text-[#e2b04a]">Demucs v4 Cluster Ready</span>
           </div>
           <button
             onClick={() => setShowProModal(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#e2b04a] to-[#ffaa22] text-[#0b0907] font-black text-xs uppercase tracking-wider shadow-lg shadow-amber-950/40 hover:brightness-110 active:scale-95 transition-all"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#e2b04a] to-[#ffaa22] text-[#0b0907] font-black text-xs uppercase tracking-wider shadow-lg shadow-amber-950/40 hover:brightness-110 active:scale-95 transition-all cursor-pointer"
           >
             <Sparkles className="w-4 h-4 fill-[#0b0907]" />
-            Gryf PRO Nielimitowane
+            Gryf PRO
           </button>
         </div>
       </div>
@@ -259,13 +261,13 @@ export const AiTabStudioView: React.FC<AiTabStudioViewProps> = ({ onBack, onPlay
                 <UploadCloud className="w-8 h-8" />
               </div>
               <h3 className="font-['Big_Shoulders_Display'] text-2xl md:text-3xl font-black uppercase text-[#f2ead8] tracking-wider mb-1">
-                Przeciągnij i upuść plik audio MP3 / WAV
+                {t('aiStudio.dropAudio')}
               </h3>
               <p className="text-xs text-[#f2ead8b3] max-w-md mb-4">
-                Obsługiwane formaty: MP3, WAV, FLAC, M4A, OGG do 50 MB. Sztuczna inteligencja natychmiast rozpocznie rozdzielanie ścieżek.
+                {t('aiStudio.dropSubtitle')}
               </p>
               <span className="px-4 py-2 rounded-xl bg-[#1e1b18] border border-[#f2ead821] text-xs font-bold uppercase tracking-wider text-[#f2ead8] group-hover:bg-[#e2b04a] group-hover:text-black transition-colors">
-                Wybierz plik z dysku
+                Browse Audio
               </span>
             </div>
 
@@ -273,7 +275,7 @@ export const AiTabStudioView: React.FC<AiTabStudioViewProps> = ({ onBack, onPlay
             <div className="p-6 rounded-2xl bg-[#110e0b] border border-[#f2ead821]">
               <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#e0392b] mb-3">
                 <Video className="w-4 h-4" />
-                <span>Lub wklej bezpośredni link YouTube</span>
+                <span>{t('aiStudio.orPasteYoutube')}</span>
               </div>
               <form onSubmit={handleYoutubeSubmit} className="flex gap-3">
                 <input

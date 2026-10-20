@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { UserProfile, AuthProvider } from '../types';
 import { sfx } from '../audio/sfxPlayer';
+import { useTranslation } from '../i18n/LanguageContext';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -25,6 +26,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   onLogin,
   initialMode = 'login',
 }) => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeProvider, setActiveProvider] = useState<AuthProvider | null>(null);
@@ -38,7 +40,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     // Symulacja autoryzacji OAuth z przekierowaniem i utworzeniem profilu
     setTimeout(() => {
-      let mockName = 'Rockowy Gitarzysta';
+      let mockName = 'Rock Guitarist';
       let mockEmail = 'guitarist@gryf.live';
       let mockAvatar = 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=150&auto=format&fit=crop&q=80';
 
@@ -104,7 +106,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     sfx.play('click_subtle');
     const guestUser: UserProfile = {
       id: 'guest_' + Date.now(),
-      name: 'Gość Sceny (Anonim)',
+      name: 'Guest Player',
       provider: 'guest',
       tier: 'free',
       createdAt: new Date().toISOString(),
@@ -137,14 +139,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-sm bg-[#e2b04a]/15 border border-[#e2b04a]/30 mb-3">
               <Sparkles className="w-3.5 h-3.5 text-[#e2b04a]" />
               <span className="text-[11px] font-['Barlow_Condensed'] uppercase tracking-[0.2em] font-bold text-[#e2b04a]">
-                Konto Gitarzysty Gryf
+                Gryf Cloud Account
               </span>
             </div>
             <h2 className="text-3xl font-black font-['Big_Shoulders_Display'] uppercase tracking-tight text-[#f2ead8]">
-              DOŁĄCZ DO SCENY
+              {t('auth.title')}
             </h2>
             <p className="text-xs text-[#f2ead8]/60 font-['Barlow'] mt-1">
-              Synchronizuj opanowane utwory, zapisuj tabulatury AI i rywalizuj w rankingach
+              {t('auth.subtitle')}
             </p>
           </div>
 
@@ -174,7 +176,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2-6.4-4.8L1.9 16.4C3.7 20.1 7.5 23 12 23z"
                 />
               </svg>
-              <span>{isSubmitting && activeProvider === 'google' ? 'Łączenie...' : 'Kontynuuj z Google'}</span>
+              <span>{isSubmitting && activeProvider === 'google' ? 'Connecting...' : t('auth.google')}</span>
             </button>
 
             {/* 2. X.COM (TWITTER) */}
@@ -186,7 +188,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               <svg className="w-4 h-4 fill-white" viewBox="0 0 24 24">
                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
               </svg>
-              <span>{isSubmitting && activeProvider === 'x' ? 'Łączenie...' : 'Kontynuuj z X.com'}</span>
+              <span>{isSubmitting && activeProvider === 'x' ? 'Connecting...' : t('auth.x')}</span>
             </button>
 
             {/* 3. FACEBOOK (META) */}
@@ -198,7 +200,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               <svg className="w-4 h-4 fill-[#1877F2]" viewBox="0 0 24 24">
                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
               </svg>
-              <span>{isSubmitting && activeProvider === 'facebook' ? 'Łączenie...' : 'Kontynuuj z Facebook'}</span>
+              <span>{isSubmitting && activeProvider === 'facebook' ? 'Connecting...' : t('auth.facebook')}</span>
             </button>
 
             {/* 4. MICROSOFT */}
@@ -213,7 +215,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 <path fill="#05a6f0" d="M1 12h10v10H1z" />
                 <path fill="#ffba08" d="M12 12h10v10H12z" />
               </svg>
-              <span>{isSubmitting && activeProvider === 'microsoft' ? 'Łączenie...' : 'Kontynuuj z Microsoft'}</span>
+              <span>{isSubmitting && activeProvider === 'microsoft' ? 'Connecting...' : t('auth.microsoft')}</span>
             </button>
           </div>
 
@@ -221,7 +223,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           <div className="flex items-center my-5">
             <div className="flex-1 border-t border-[#f2ead8]/10"></div>
             <span className="px-3 text-[10px] font-['Barlow_Condensed'] uppercase tracking-widest text-[#f2ead8]/40 font-bold">
-              LUB KONTO E-MAIL
+              {t('auth.emailOr')}
             </span>
             <div className="flex-1 border-t border-[#f2ead8]/10"></div>
           </div>
@@ -232,7 +234,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#f2ead8]/40" />
               <input
                 type="email"
-                placeholder="twoj-email@domena.pl"
+                placeholder={t('auth.emailPlaceholder')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -245,7 +247,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               disabled={isSubmitting}
               className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-sm bg-[#e0392b] hover:bg-[#c93226] text-white font-['Big_Shoulders_Display'] uppercase font-black text-sm tracking-wider transition-all cursor-pointer shadow-[0_0_15px_rgba(224,57,43,0.4)] disabled:opacity-50"
             >
-              <span>{isSubmitting && activeProvider === 'email' ? 'WYSYŁANIE...' : 'ZALOGUJ / UTWÓRZ KONTO'}</span>
+              <span>{isSubmitting && activeProvider === 'email' ? 'SENDING...' : t('auth.sendMagicLink')}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
@@ -256,7 +258,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               onClick={handleGuestLogin}
               className="text-xs font-['Barlow_Condensed'] uppercase tracking-wider font-bold text-[#f2ead8]/60 hover:text-[#e2b04a] transition-colors cursor-pointer"
             >
-              Kontynuuj jako Gość (Pełny Dostęp Open-Source Offline)
+              {t('auth.guestMode')} ({t('auth.guestDesc')})
             </button>
           </div>
         </div>
