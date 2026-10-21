@@ -34,22 +34,31 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   }, []);
 
-  // W tle: asynchroniczne sprawdzenie geolokalizacji IP (jeśli brak manualnego wyboru)
+  // W tle: asynchroniczne sprawdzenie geolokalizacji IP (tylko gdy język nie został wykryty lokalnie)
   useEffect(() => {
     if (typeof document !== 'undefined') {
       document.documentElement.lang = language;
     }
 
+    // Jeśli język został już precyzyjnie rozpoznany z przeglądarki lub strefy czasowej, pomijamy zewnętrzne API
+    if (language !== 'en' || !isAutoDetected) {
+      return;
+    }
+
     let isMounted = true;
-    detectLanguageFromIp().then((ipLang) => {
-      if (isMounted && ipLang && ipLang !== language) {
-        setLanguageState(ipLang);
-        setStoredLanguage(ipLang, false);
-        if (typeof document !== 'undefined') {
-          document.documentElement.lang = ipLang;
+    detectLanguageFromIp()
+      .then((ipLang) => {
+        if (isMounted && ipLang && ipLang !== language) {
+          setLanguageState(ipLang);
+          setStoredLanguage(ipLang, false);
+          if (typeof document !== 'undefined') {
+            document.documentElement.lang = ipLang;
+          }
         }
-      }
-    });
+      })
+      .catch(() => {
+        // Cichy fallback przy blokadzie przez AdBlock / brak sieci
+      });
 
     return () => {
       isMounted = false;
