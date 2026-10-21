@@ -47,18 +47,25 @@ body {
 
 .slice {
   position: relative;
-  flex: 0 0 170px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: 170px;
   height: 100%;
   border-radius: 18px;
   overflow: hidden;
   cursor: pointer;
-  transition: flex 0.45s cubic-bezier(0.2, 0.9, 0.2, 1), transform 0.3s ease;
+  transition: flex-grow 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+              flex-basis 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+              border-color 0.3s ease,
+              transform 0.3s ease;
   border: 1px solid var(--rule);
   background: #110e0b;
 }
 
 .slice.open {
-  flex: 1 1 0;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0%;
   cursor: default;
   border-color: var(--rule-2);
 }

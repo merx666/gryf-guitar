@@ -281,26 +281,24 @@ export const HighwayView: React.FC<HighwayViewProps> = ({
   const lastTimestampRef = useRef<number | null>(null);
   const animFrameId = useRef<number | null>(null);
 
-  // Główna pętla renderowania Canvas 2D
+  // Główna pętla renderowania i symulacji (działa płynnie w obu trybach 3D i 2D)
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    let animId: number;
+    let lastTime: number | null = null;
 
     const render = (timestamp: number) => {
-      if (lastTimestampRef.current === null) {
-        lastTimestampRef.current = timestamp;
+      if (lastTime === null) {
+        lastTime = timestamp;
       }
-      const deltaSec = (timestamp - lastTimestampRef.current) / 1000;
-      lastTimestampRef.current = timestamp;
+      const deltaSec = Math.min((timestamp - lastTime) / 1000, 0.1);
+      lastTime = timestamp;
 
       // Wygaszanie wibracji strun
       for (let s = 0; s < 6; s++) {
         stringVibrations.current[s] = Math.max(0, stringVibrations.current[s] - deltaSec * 3);
       }
 
-      // Aktualizacja cząsteczek iskier
+      // Aktualizacja cząsteczek iskier 2D
       for (let pIdx = sparksRef.current.length - 1; pIdx >= 0; pIdx--) {
         const p = sparksRef.current[pIdx];
         p.x += p.vx;
@@ -311,6 +309,28 @@ export const HighwayView: React.FC<HighwayViewProps> = ({
           sparksRef.current.splice(pIdx, 1);
         }
       }
+
+      // Aktualizacja cząsteczek iskier 3D
+      setSparks3D((prev) => {
+        if (!prev.length) return prev;
+        const next = [];
+        for (let i = 0; i < prev.length; i++) {
+          const sp = prev[i];
+          const newLife = sp.life - deltaSec * 2.0;
+          if (newLife > 0) {
+            next.push({
+              ...sp,
+              pos: [
+                sp.pos[0] + sp.velocity[0] * deltaSec * 5,
+                sp.pos[1] + sp.velocity[1] * deltaSec * 5,
+                sp.pos[2] + sp.velocity[2] * deltaSec * 5,
+              ] as [number, number, number],
+              life: newLife,
+            });
+          }
+        }
+        return next;
+      });
 
       if (isPlaying) {
         currentTimeRef.current += deltaSec * playbackSpeed;
@@ -332,16 +352,23 @@ export const HighwayView: React.FC<HighwayViewProps> = ({
         }
       }
 
-      drawRocksmithHighway(ctx, canvas.width, canvas.height, currentTimeRef.current);
-      animFrameId.current = requestAnimationFrame(render);
+      // Rysowanie Canvas 2D tylko w trybie 2D
+      if (renderMode === '2d' && canvasRef.current) {
+        const ctx = canvasRef.current.getContext('2d');
+        if (ctx) {
+          drawRocksmithHighway(ctx, canvasRef.current.width, canvasRef.current.height, currentTimeRef.current);
+        }
+      }
+
+      animId = requestAnimationFrame(render);
     };
 
-    animFrameId.current = requestAnimationFrame(render);
+    animId = requestAnimationFrame(render);
 
     return () => {
-      if (animFrameId.current) cancelAnimationFrame(animFrameId.current);
+      cancelAnimationFrame(animId);
     };
-  }, [isPlaying, playbackSpeed, score, multiplier, accuracy, stars]);
+  }, [isPlaying, playbackSpeed, score, multiplier, accuracy, stars, renderMode, songDuration]);
 
   // Rysowanie Autostrady Rocksmith+ (Drewniany gryf, metalowe progi, inkrustacje, laserowe nuty)
   const drawRocksmithHighway = (

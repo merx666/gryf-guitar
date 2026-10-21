@@ -1,10 +1,45 @@
 import React, { useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { PerspectiveCamera, Text } from '@react-three/drei';
+import { PerspectiveCamera } from '@react-three/drei';
 import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import { NoteHit } from '../types';
 import { STRING_COLORS } from './HighwayView';
+
+// Cache dla tekstur progów (0-24) — zero troika web workerów, natychmiastowe 60/120 FPS
+const FRET_TEXTURE_CACHE = new Map<number, THREE.CanvasTexture>();
+
+function getFretTexture(fret: number): THREE.CanvasTexture {
+  const cached = FRET_TEXTURE_CACHE.get(fret);
+  if (cached) return cached;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = 128;
+  canvas.height = 128;
+  const ctx = canvas.getContext('2d');
+  if (ctx) {
+    ctx.fillStyle = '#0b0907';
+    ctx.beginPath();
+    ctx.arc(64, 64, 54, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 6;
+    ctx.stroke();
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 62px Barlow, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(fret === 0 ? 'O' : fret.toString(), 64, 66);
+  }
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.generateMipmaps = true;
+  texture.minFilter = THREE.LinearMipmapLinearFilter;
+  FRET_TEXTURE_CACHE.set(fret, texture);
+  return texture;
+}
 
 // Konfiguracja geometrii gryfu 3D
 const HIGHWAY_LENGTH = 32;
@@ -233,19 +268,15 @@ const NoteGems3D: React.FC<{
               />
             </mesh>
 
-            {/* Oznaczenie numeru progu na nucie */}
-            <Text
-              position={[0, 0.11, 0]}
-              rotation={[-Math.PI / 2, 0, 0]}
-              fontSize={0.24}
-              color={isMissed ? '#94a3b8' : '#ffffff'}
-              anchorX="center"
-              anchorY="middle"
-              outlineWidth={0.02}
-              outlineColor="#000000"
-            >
-              {item.note.fret === 0 ? 'O' : item.note.fret.toString()}
-            </Text>
+            {/* Oznaczenie numeru progu na nucie (natychmiastowy CanvasTexture) */}
+            <mesh position={[0, 0.10, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+              <planeGeometry args={[0.34, 0.34]} />
+              <meshBasicMaterial
+                map={getFretTexture(item.note.fret)}
+                transparent
+                depthWrite={false}
+              />
+            </mesh>
           </group>
         );
       })}
