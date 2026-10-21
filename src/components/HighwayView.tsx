@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { Play, Pause, RotateCcw, ArrowLeft, Flame, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Play, Pause, RotateCcw, ArrowLeft, Flame, Sparkles, CheckCircle2, Box, Layers } from 'lucide-react';
 import { audio } from '../audio/audioEngine';
 import { sfx } from '../audio/sfxPlayer';
 import { PitchDetectionResult, NoteHit } from '../types';
 import { useTranslation } from '../i18n/LanguageContext';
+import { Highway3DCanvas } from './Highway3DCanvas';
+import { multiplayer } from '../multiplayer/colyseusClient';
 
 interface HighwayViewProps {
   songTitle: string;
@@ -60,6 +62,16 @@ export const HighwayView: React.FC<HighwayViewProps> = ({
   const [detectedPitch, setDetectedPitch] = useState<PitchDetectionResult | null>(null);
   const [stars, setStars] = useState<number>(0);
   const [accuracy, setAccuracy] = useState<number>(100);
+
+  // Silnik renderowania: 3D WebGL (Three.js + Bloom) lub klasyczny 2D Canvas
+  const [renderMode, setRenderMode] = useState<'3d' | '2d'>('3d');
+  const [sparks3D, setSparks3D] = useState<Array<{
+    id: number;
+    pos: [number, number, number];
+    color: string;
+    velocity: [number, number, number];
+    life: number;
+  }>>([]);
 
   // Animacja wibracji strun po uderzeniu
   const stringVibrations = useRef<number[]>([0, 0, 0, 0, 0, 0]);
@@ -184,30 +196,53 @@ export const HighwayView: React.FC<HighwayViewProps> = ({
     });
 
     updateAccuracyAndStars();
+    multiplayer.sendHit(isPerfect ? 'perfect' : 'good', score + pointsGained, streak + 1, accuracy);
   };
 
   const spawnSparks = (stringIdx: number, color: string, count: number) => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-    const bottomY = canvas.height * 0.88;
-    const bottomWidth = canvas.width * 0.88;
-    const bottomX1 = (canvas.width - bottomWidth) / 2;
-    const x = bottomX1 + bottomWidth * (stringIdx / 5);
+    if (canvas) {
+      const bottomY = canvas.height * 0.88;
+      const bottomWidth = canvas.width * 0.88;
+      const bottomX1 = (canvas.width - bottomWidth) / 2;
+      const x = bottomX1 + bottomWidth * (stringIdx / 5);
 
-    for (let k = 0; k < count; k++) {
-      const angle = (Math.PI * 2 * k) / count + (Math.random() - 0.5);
-      const speed = Math.random() * 4 + 2;
-      sparksRef.current.push({
-        x,
-        y: bottomY,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed - 2,
-        life: 1.0,
-        maxLife: 1.0,
+      for (let k = 0; k < count; k++) {
+        const angle = (Math.PI * 2 * k) / count + (Math.random() - 0.5);
+        const speed = Math.random() * 4 + 2;
+        sparksRef.current.push({
+          x,
+          y: bottomY,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 2,
+          life: 1.0,
+          maxLife: 1.0,
+          color,
+          size: Math.random() * 3 + 2,
+        });
+      }
+    }
+
+    // 3D Sparks dla Three.js WebGL
+    const STRING_SPACING = 0.85;
+    const x3d = -((6 - 1) * STRING_SPACING) / 2 + stringIdx * STRING_SPACING;
+    const new3D: Array<{
+      id: number;
+      pos: [number, number, number];
+      color: string;
+      velocity: [number, number, number];
+      life: number;
+    }> = [];
+    for (let k = 0; k < 12; k++) {
+      new3D.push({
+        id: Math.random(),
+        pos: [x3d + (Math.random() - 0.5) * 0.3, 0.15, (Math.random() - 0.5) * 0.3],
         color,
-        size: Math.random() * 3 + 2,
+        velocity: [(Math.random() - 0.5) * 0.2, Math.random() * 0.3, (Math.random() - 0.5) * 0.2],
+        life: 1.0,
       });
     }
+    setSparks3D((prev) => [...prev.slice(-30), ...new3D]);
   };
 
   const registerMiss = (index: number) => {
@@ -219,6 +254,7 @@ export const HighwayView: React.FC<HighwayViewProps> = ({
     sfx.play('hit_miss');
     triggerFeedback(t('highway.miss'), '#e0392b');
     updateAccuracyAndStars();
+    multiplayer.sendHit('miss', score, 0, accuracy);
   };
 
   const triggerFeedback = (text: string, color: string) => {
@@ -626,9 +662,20 @@ export const HighwayView: React.FC<HighwayViewProps> = ({
         </div>
       </div>
 
-      {/* Główny obszar 3D Canvas Highway */}
+      {/* Główny obszar 3D Highway (Three.js WebGL + Bloom lub Canvas 2D) */}
       <div className="relative flex-1 w-full flex items-center justify-center bg-radial from-[#15110d] via-[#0b0907] to-black overflow-hidden">
-        <canvas ref={canvasRef} width={960} height={620} className="w-full h-full max-w-5xl object-contain" />
+        {renderMode === '3d' ? (
+          <Highway3DCanvas
+            currentTime={currentSongTime}
+            notes={activeNotesRef.current}
+            stringVibrations={stringVibrations.current}
+            streak={streak}
+            multiplier={multiplier}
+            sparks={sparks3D}
+          />
+        ) : (
+          <canvas ref={canvasRef} width={960} height={620} className="w-full h-full max-w-5xl object-contain" />
+        )}
 
         {/* Feedback uderzenia */}
         {hitFeedback && (
@@ -709,7 +756,20 @@ export const HighwayView: React.FC<HighwayViewProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center gap-4 text-xs text-[#f2ead870]">
+        <div className="flex items-center gap-3 text-xs text-[#f2ead870]">
+          {/* Przełącznik silnika 3D / 2D */}
+          <button
+            onClick={() => setRenderMode((m) => (m === '3d' ? '2d' : '3d'))}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer border ${
+              renderMode === '3d'
+                ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-[0_0_12px_rgba(245,158,11,0.25)]'
+                : 'bg-[#1a1612] text-[#f2ead870] border-[#f2ead821] hover:text-white'
+            }`}
+          >
+            {renderMode === '3d' ? <Box className="w-3.5 h-3.5 text-amber-400" /> : <Layers className="w-3.5 h-3.5" />}
+            <span>{renderMode === '3d' ? '⚡ Silnik 3D (Three.js WebGL)' : '🎯 Tryb 2D (Lekki Canvas)'}</span>
+          </button>
+
           <div className="flex items-center gap-1.5">
             <CheckCircle2 className="w-4 h-4 text-emerald-400" />
             <span>{t('highway.accuracy')}: <strong className="text-white">{accuracy}%</strong></span>

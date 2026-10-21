@@ -113,7 +113,7 @@ export const Header: React.FC<HeaderProps> = ({
         >
           {/* Ikona logo z gradientem */}
           <div className="w-9 h-9 rounded-xl bg-[#14110e] border border-[#f2ead821] flex items-center justify-center p-1 shadow-md group-hover:border-[#e0392b] transition-colors overflow-hidden">
-            <img src="/logo-icon.svg" alt="Gryf" className="w-full h-full object-contain" />
+            <img src={`${import.meta.env.BASE_URL}logo-icon.svg`} alt="Gryf" className="w-full h-full object-contain" />
           </div>
 
           <div>

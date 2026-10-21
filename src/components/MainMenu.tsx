@@ -71,7 +71,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
           aria-label="Graj"
         >
           <img
-            src="/menu/stage-noir.webp"
+            src={`${import.meta.env.BASE_URL}menu/stage-noir.webp`}
             alt="Scena Noir"
             className="slice-still"
             draggable={false}
@@ -166,7 +166,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
           aria-label="Piosenki"
         >
           <img
-            src="/menu/stage-phosphor.webp"
+            src={`${import.meta.env.BASE_URL}menu/stage-phosphor.webp`}
             alt="Scena Fosfor"
             className="slice-still"
             draggable={false}
@@ -256,7 +256,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
           aria-label="Studio AI"
         >
           <img
-            src="/menu/stage-forge.webp"
+            src={`${import.meta.env.BASE_URL}menu/stage-forge.webp`}
             alt="Scena AI Studio"
             className="slice-still"
             draggable={false}
@@ -348,7 +348,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
           aria-label="Sprzęt"
         >
           <img
-            src="/menu/stage-forge.webp"
+            src={`${import.meta.env.BASE_URL}menu/stage-forge.webp`}
             alt="Scena Kuźnia"
             className="slice-still"
             draggable={false}
@@ -439,7 +439,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
           aria-label="Profil"
         >
           <img
-            src="/menu/stage-horizon.webp"
+            src={`${import.meta.env.BASE_URL}menu/stage-horizon.webp`}
             alt="Scena Horyzont"
             className="slice-still"
             draggable={false}

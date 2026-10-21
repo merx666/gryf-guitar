@@ -44,7 +44,8 @@ export class AudioEngine {
 
     if (!this.workletLoaded) {
       try {
-        await this.ctx.audioWorklet.addModule('/workers/guitarWorklet.js');
+        const workletUrl = new URL(`${import.meta.env.BASE_URL}workers/guitarWorklet.js`, window.location.href).href;
+        await this.ctx.audioWorklet.addModule(workletUrl);
         this.workletLoaded = true;
 
         // Utworzenie węzłów DSP

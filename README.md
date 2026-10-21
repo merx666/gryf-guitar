@@ -12,6 +12,7 @@
 *Podłącz gitarę kablem audio lub graj akustycznie przed mikrofonem. 100% Free & Open Source.*
 
 [![Build & Test](https://github.com/merx666/gryf-guitar/actions/workflows/deploy.yml/badge.svg)](https://github.com/merx666/gryf-guitar/actions)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-merx666.github.io%2Fgryf--guitar-e0392b?style=flat&logo=githubpages&logoColor=white)](https://merx666.github.io/gryf-guitar/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-amber.svg)](LICENSE)
 [![React 19](https://img.shields.io/badge/React-19-blue.svg)](https://react.dev)
 [![Tailwind v4](https://img.shields.io/badge/TailwindCSS-v4-38bdf8.svg)](https://tailwindcss.com)

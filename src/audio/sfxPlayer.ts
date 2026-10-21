@@ -34,7 +34,8 @@ class SfxPlayer {
     if (typeof window === 'undefined' || typeof Worker === 'undefined') return;
 
     try {
-      this.worker = new Worker('/workers/sfxWorker.js');
+      const workerUrl = new URL(`${import.meta.env.BASE_URL}workers/sfxWorker.js`, window.location.href).href;
+      this.worker = new Worker(workerUrl);
       this.worker.onmessage = (e) => {
         const { key, channels } = e.data;
         if (!this.ctx || !channels || !channels.length) return;
