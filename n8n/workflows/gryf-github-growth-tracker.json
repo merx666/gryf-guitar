@@ -15,14 +15,14 @@
         220,
         300
       ],
-      "webhookId": "a3d9b203-c5a4-6b7c-0f31-672a505a4001"
+      "webhookId": "github-gryf-webhook"
     },
     {
       "parameters": {
-        "jsCode": "const body = $json.body || {};\nconst action = body.action || 'event';\nconst sender = body.sender?.login || 'guitarist';\nconst repo = body.repository?.full_name || 'merx666/gryf-guitar';\nconst stars = body.repository?.stargazers_count || 0;\n\nlet message = '';\nif (action === 'created' && body.starred_at) {\n  message = `⭐ New Star on GitHub! ${sender} just starred ${repo}. Total stars: ${stars}`;\n} else if (action === 'published' && body.release) {\n  message = `🚀 NEW RELEASE: Gryf ${body.release.tag_name} is live!\\n\\n${body.release.body || 'Performance improvements and new rock songs.'}`;\n} else {\n  message = `🔔 GitHub Event: ${action} by ${sender} on ${repo}`;\n}\n\nreturn [{\n  json: {\n    timestamp: new Date().toISOString(),\n    event: action,\n    sender,\n    stars,\n    message\n  }\n}];"
+        "jsCode": "const body = $json.body || {};\nconst action = body.action || 'event';\nconst sender = body.sender?.login || 'guitarist';\nconst repo = body.repository?.full_name || 'merx666/gryf-guitar';\nconst stars = body.repository?.stargazers_count || 0;\n\nlet message = '';\nlet shouldTweet = false;\nlet tweetText = '';\n\nif (action === 'published' && body.release) {\n  const tag = body.release.tag_name || 'Update';\n  tweetText = `🎸 NEW RELEASE: Gryf ${tag} is live!\\n\\nAuthentic Rocksmith 3D note highway, real-time pitch detection & in-browser amp DSP.\\n\\nPlay free: http://92.118.206.90:3000\\nGitHub: https://github.com/merx666/gryf-guitar\\n#Guitar #Rocksmith #OpenSource`;\n  shouldTweet = true;\n  message = `🚀 Release ${tag} announced!`;\n} else if (action === 'created' && body.starred_at) {\n  message = `⭐ New Star on GitHub! ${sender} just starred ${repo}. Total stars: ${stars}`;\n  if (stars > 0 && stars % 25 === 0) {\n    tweetText = `🎉 Gryf just crossed ${stars} stars on GitHub!\\n\\nThank you to every guitarist testing our open-source browser-based rhythm trainer: http://92.118.206.90:3000\\n#OpenSource #Guitar`;\n    shouldTweet = true;\n  }\n} else {\n  message = `🔔 GitHub Event: ${action} by ${sender} on ${repo}`;\n}\n\nreturn [{\n  json: {\n    timestamp: new Date().toISOString(),\n    event: action,\n    sender,\n    stars,\n    message,\n    shouldTweet,\n    tweetText\n  }\n}];"
       },
       "id": "a3d9b203-c5a4-6b7c-0f31-672a505a4002",
-      "name": "Format Event Message",
+      "name": "Process Event & Milestones",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
@@ -32,24 +32,79 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "http://127.0.0.1:8090/growth_event",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={\n  \"text\": $json.message,\n  \"stars\": $json.stars,\n  \"event\": $json.event\n}",
-        "options": {
-          "timeout": 5000
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.shouldTweet }}",
+              "value2": true
+            }
+          ]
         }
       },
       "id": "a3d9b203-c5a4-6b7c-0f31-672a505a4003",
-      "name": "Log to Growth Hub",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
+      "name": "Check If Should Tweet",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
       "position": [
         720,
         300
-      ],
-      "continueOnFail": true
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://seeder:8090/tweet",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-MPT-Secret",
+              "value": "mpt_sec_8a3f91d04b6c82e7"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ tweet_text: $json.tweetText }) }}",
+        "options": {
+          "timeout": 15000,
+          "retryOnFail": true,
+          "maxTries": 3,
+          "waitBetweenTries": 3000
+        }
+      },
+      "id": "a3d9b203-c5a4-6b7c-0f31-672a505a4004",
+      "name": "Publish Tweet Announcement",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        960,
+        280
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a3d9b203-c5a4-6b7c-0f31-672a505a4005",
+      "name": "Error Trigger Handler",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        220,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const execution = $json.execution || {};\nreturn [{\n  json: {\n    timestamp: new Date().toISOString(),\n    workflow: 'GitHub Growth Tracker',\n    error: execution.error?.message || 'Error occurred'\n  }\n}];"
+      },
+      "id": "a3d9b203-c5a4-6b7c-0f31-672a505a4006",
+      "name": "Log Dead Letter",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        500
+      ]
     }
   ],
   "connections": {
@@ -57,18 +112,40 @@
       "main": [
         [
           {
-            "node": "Format Event Message",
+            "node": "Process Event & Milestones",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Format Event Message": {
+    "Process Event & Milestones": {
       "main": [
         [
           {
-            "node": "Log to Growth Hub",
+            "node": "Check If Should Tweet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check If Should Tweet": {
+      "main": [
+        [
+          {
+            "node": "Publish Tweet Announcement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger Handler": {
+      "main": [
+        [
+          {
+            "node": "Log Dead Letter",
             "type": "main",
             "index": 0
           }

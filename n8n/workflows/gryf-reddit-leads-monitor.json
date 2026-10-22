@@ -17,7 +17,7 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        220,
+        200,
         300
       ]
     },
@@ -26,8 +26,12 @@
         "url": "https://www.reddit.com/r/rocksmith/new.json?limit=25",
         "options": {
           "headers": {
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) GryfLeadFinder/1.0"
-          }
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) GryfLeadFinder/2.0"
+          },
+          "timeout": 10000,
+          "retryOnFail": true,
+          "maxTries": 3,
+          "waitBetweenTries": 2000
         }
       },
       "id": "b2e8a102-b4f3-5f6b-9e20-561f494f3002",
@@ -42,37 +46,53 @@
     },
     {
       "parameters": {
-        "jsCode": "const items = $input.all();\nconst leads = [];\nconst keywords = ['alternative', 'app', 'browser', 'tab', 'mac', 'linux', 'cable', 'no cable', 'real tone', 'free', 'online', 'latency'];\n\nfor (const item of items) {\n  const children = item.json?.data?.children || [];\n  for (const post of children) {\n    const title = (post.data?.title || '').toLowerCase();\n    const text = (post.data?.selftext || '').toLowerCase();\n    const fullContent = `${title} ${text}`;\n    \n    const matched = keywords.filter(k => fullContent.includes(k));\n    if (matched.length >= 2) {\n      leads.push({\n        id: post.data.id,\n        title: post.data.title,\n        author: post.data.author,\n        url: `https://reddit.com${post.data.permalink}`,\n        matchedKeywords: matched,\n        suggestedReply: `Hey u/${post.data.author}! If you're looking for a free, open-source alternative to Rocksmith that runs right in your browser (no Real Tone cable needed, works with standard mic or USB audio interface), check out Gryf: http://92.118.206.90:3000 (GitHub: https://github.com/merx666/gryf-guitar). It does real-time pitch detection, 3D note highway, and AI stem separation.`\n      });\n    }\n  }\n}\n\nreturn leads.length > 0 ? leads.map(l => ({ json: l })) : [];"
+        "jsCode": "const items = $input.all();\nconst leads = [];\nconst keywords = ['alternative', 'app', 'browser', 'tab', 'mac', 'linux', 'cable', 'no cable', 'real tone', 'free', 'online', 'latency', 'guitar hero', 'rocksmith+'];\n\n// Deduplicate using workflow static state to ensure idempotent execution\nconst staticData = $getWorkflowStaticData('global');\nstaticData.seenIds = staticData.seenIds || [];\n\nfor (const item of items) {\n  const children = item.json?.data?.children || [];\n  for (const post of children) {\n    const id = post.data?.id;\n    if (!id || staticData.seenIds.includes(id)) {\n      continue;\n    }\n    \n    const title = (post.data?.title || '').toLowerCase();\n    const text = (post.data?.selftext || '').toLowerCase();\n    const fullContent = `${title} ${text}`;\n    \n    const matched = keywords.filter(k => fullContent.includes(k));\n    if (matched.length >= 2) {\n      staticData.seenIds.push(id);\n      leads.push({\n        id: post.data.id,\n        title: post.data.title,\n        author: post.data.author,\n        url: `https://reddit.com${post.data.permalink}`,\n        matchedKeywords: matched,\n        created_utc: post.data.created_utc,\n        suggestedReply: `Hey u/${post.data.author}! If you're looking for a free, open-source alternative to Rocksmith that runs in your browser without needing a Real Tone cable (works with any USB audio interface or mic), check out Gryf: http://92.118.206.90:3000 (GitHub: https://github.com/merx666/gryf-guitar). It features a 3D highway, real-time sub-5ms pitch detection, and AI stem separation.`\n      });\n    }\n  }\n}\n\n// Cap seenIds at 500 to prevent memory growth (Sharp Edge: large state)\nif (staticData.seenIds.length > 500) {\n  staticData.seenIds = staticData.seenIds.slice(-500);\n}\n\nreturn leads.length > 0 ? leads.map(l => ({ json: l })) : [];"
       },
       "id": "b2e8a102-b4f3-5f6b-9e20-561f494f3003",
-      "name": "Filter Relevant Posts & Draft Replies",
+      "name": "Deduplicate & Match Intent",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        700,
+        720,
         300
       ]
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "http://127.0.0.1:8090/reddit_lead",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={\n  \"post_title\": $json.title,\n  \"post_url\": $json.url,\n  \"author\": $json.author,\n  \"suggested_reply\": $json.suggestedReply,\n  \"keywords\": $json.matchedKeywords\n}",
-        "options": {
-          "timeout": 10000
-        }
+        "jsCode": "const items = $input.all();\nconst summary = {\n  processed_at: new Date().toISOString(),\n  found_leads_count: items.length,\n  leads: items.map(i => ({\n    title: i.json.title,\n    author: i.json.author,\n    url: i.json.url,\n    keywords: i.json.matchedKeywords\n  }))\n};\nreturn [{ json: summary }];"
       },
       "id": "b2e8a102-b4f3-5f6b-9e20-561f494f3004",
-      "name": "Notify Seeder Bot",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
+      "name": "Format Lead Audit Report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
       "position": [
-        940,
+        980,
         300
-      ],
-      "continueOnFail": true
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "b2e8a102-b4f3-5f6b-9e20-561f494f3005",
+      "name": "Error Trigger Handler",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        200,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const execution = $json.execution || {};\nreturn [{\n  json: {\n    timestamp: new Date().toISOString(),\n    workflow: 'Reddit Leads Monitor',\n    error: execution.error?.message || 'Error occurred during Reddit lead fetch'\n  }\n}];"
+      },
+      "id": "b2e8a102-b4f3-5f6b-9e20-561f494f3006",
+      "name": "Log Dead Letter",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        500
+      ]
     }
   ],
   "connections": {
@@ -91,18 +111,29 @@
       "main": [
         [
           {
-            "node": "Filter Relevant Posts & Draft Replies",
+            "node": "Deduplicate & Match Intent",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Filter Relevant Posts & Draft Replies": {
+    "Deduplicate & Match Intent": {
       "main": [
         [
           {
-            "node": "Notify Seeder Bot",
+            "node": "Format Lead Audit Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger Handler": {
+      "main": [
+        [
+          {
+            "node": "Log Dead Letter",
             "type": "main",
             "index": 0
           }

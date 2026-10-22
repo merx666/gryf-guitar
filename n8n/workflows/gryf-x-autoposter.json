@@ -35,11 +35,11 @@
         200,
         480
       ],
-      "webhookId": "c1f7b091-a3f2-4e5a-8d19-450f383e2002"
+      "webhookId": "trigger-gryf-post"
     },
     {
       "parameters": {
-        "jsCode": "const viralPosts = [\n  {\n    hook: '🎸 Learning guitar shouldn\\'t cost $15/month for Ubisoft Rocksmith+.',\n    body: 'We built GRYF: a 100% free, open-source web app that runs in any browser.\\n\\n⚡ Sub-5ms pitch detection (AudioWorklet + YIN)\\n⚡ 3D note highway with Rocksmith string colors\\n⚡ Zero installation — works with standard microphone or USB interface\\n\\nTry it live: http://92.118.206.90:3000\\nGitHub: https://github.com/merx666/gryf-guitar',\n    tags: ['#Guitar', '#OpenSource', '#WebDev', '#JavaScript', '#Rocksmith', '#MusicTech'],\n    mediaUrl: 'http://92.118.206.90:3000/banner-social.svg'\n  },\n  {\n    hook: '🔥 Drop ANY MP3 or YouTube link -> get instant guitar tabs & 3D highway sync.',\n    body: 'Gryf AI Studio separates guitar stems with Demucs v4 and aligns notes note-for-note down to 5ms.\\n\\n• Solo the lead guitar to learn tricky solos\\n• Mute the guitar to play with the real backing track\\n• Export synced GPX & MIDI files\\n\\n100% open-source: https://github.com/merx666/gryf-guitar\\nLive demo: http://92.118.206.90:3000',\n    tags: ['#Gryf', '#GuitarTabs', '#AI', '#Demucs', '#WebAudio', '#RockGuitar'],\n    mediaUrl: 'http://92.118.206.90:3000/banner-github.svg'\n  },\n  {\n    hook: '⚡ Can Web Audio API replace a $2,000 guitar amplifier rig?',\n    body: 'Gryf includes in-browser physical tube emulation, 50Hz hum filter, BBD analog stereo chorus and tape delay with zero latency.\\n\\nPlug your guitar directly into your browser: http://92.118.206.90:3000\\nStar the repo on GitHub: https://github.com/merx666/gryf-guitar',\n    tags: ['#WebAudio', '#GuitarPedals', '#DSP', '#AudioWorklet', '#OpenSource'],\n    mediaUrl: 'http://92.118.206.90:3000/banner-social.svg'\n  },\n  {\n    hook: '🚀 Master of Puppets intro riff tested at 212 BPM on our WebGL 3D note highway.',\n    body: 'Instant visual feedback, streak multiplier flames, and pitch lock strobe tuner.\\n\\nFree open-source rhythm learning: http://92.118.206.90:3000\\nContribute: https://github.com/merx666/gryf-guitar',\n    tags: ['#Metallica', '#GuitarHero', '#Rocksmith', '#MetalGuitar', '#WebDev'],\n    mediaUrl: 'http://92.118.206.90:3000/banner-github.svg'\n  }\n];\n\n// Losowy lub sekwencyjny wybór posta\nconst index = Math.floor(Math.random() * viralPosts.length);\nconst selected = viralPosts[index];\n\nreturn [{\n  json: {\n    timestamp: new Date().toISOString(),\n    postText: `${selected.hook}\\n\\n${selected.body}\\n\\n${selected.tags.join(' ')}`,\n    mediaUrl: selected.mediaUrl,\n    targetPlatforms: ['x_twitter', 'reddit_promo', 'discord_announcements'],\n    status: 'ready_to_publish'\n  }\n}];"
+        "jsCode": "const viralPosts = [\n  {\n    hook: '🎸 Learning guitar shouldn\\'t cost $15/mo for Rocksmith+.',\n    body: 'We made GRYF: 100% free, open-source web app running right in your browser.\\n\\n• Sub-5ms pitch detection (AudioWorklet + YIN)\\n• 3D Rocksmith highway & beveled gems\\n• Works with standard mic or USB audio interface\\n\\nDemo: http://92.118.206.90:3000\\nGitHub: https://github.com/merx666/gryf-guitar',\n    tags: ['#Guitar', '#OpenSource', '#Rocksmith', '#WebAudio']\n  },\n  {\n    hook: '🔥 Drop ANY MP3 or YouTube link -> get instant guitar tabs & 3D highway sync.',\n    body: 'Gryf AI Studio isolates guitar stems with Demucs v4 and aligns notes note-for-note down to 5ms.\\n\\n• Solo lead guitar to nail solos\\n• Mute guitar to jam with real backing tracks\\n\\nTry live: http://92.118.206.90:3000\\nCode: https://github.com/merx666/gryf-guitar',\n    tags: ['#GuitarTabs', '#AI', '#Demucs', '#WebDev']\n  },\n  {\n    hook: '⚡ Can Web Audio API replace a guitar amp?',\n    body: 'Gryf features in-browser physical tube emulation, 50Hz hum filter, BBD analog stereo chorus and tape delay with zero latency.\\n\\nPlug your guitar directly into Chrome/Firefox:\\nhttp://92.118.206.90:3000\\nGitHub: https://github.com/merx666/gryf-guitar',\n    tags: ['#WebAudio', '#GuitarPedals', '#DSP', '#OpenSource']\n  },\n  {\n    hook: '🎸 Rocksmith 2014 was legendary. We brought the experience to the web.',\n    body: 'True 3D perspective neck, mother-of-pearl trapezoid inlays, open-string hoops, and 4-fret hand anchor brackets.\\n\\n100% free & open-source:\\nhttp://92.118.206.90:3000\\nCode: https://github.com/merx666/gryf-guitar',\n    tags: ['#Rocksmith', '#GuitarHero', '#Web3D', '#ThreeJS']\n  }\n];\n\n// Use static data to ensure non-consecutive post rotation (idempotent step)\nconst staticData = $getWorkflowStaticData('global');\nconst lastIndex = staticData.lastPostIndex !== undefined ? staticData.lastPostIndex : -1;\nlet nextIndex = Math.floor(Math.random() * viralPosts.length);\nif (viralPosts.length > 1 && nextIndex === lastIndex) {\n  nextIndex = (nextIndex + 1) % viralPosts.length;\n}\nstaticData.lastPostIndex = nextIndex;\nstaticData.lastPostAt = new Date().toISOString();\n\nconst selected = viralPosts[nextIndex];\nlet fullText = `${selected.hook}\\n\\n${selected.body}\\n\\n${selected.tags.join(' ')}`;\n\n// Smart truncation to safely fit within Twitter/X 280 character limit\nif (fullText.length > 280) {\n  const excess = fullText.length - 277;\n  fullText = fullText.substring(0, 277) + '...';\n}\n\nreturn [{\n  json: {\n    timestamp: staticData.lastPostAt,\n    tweet_text: fullText,\n    post_index: nextIndex,\n    char_count: fullText.length\n  }\n}];"
       },
       "id": "c1f7b091-a3f2-4e5a-8d19-450f383e2003",
       "name": "Select Rotating Viral Hook",
@@ -53,23 +53,58 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "http://127.0.0.1:8090/post_social",
+        "url": "http://seeder:8090/tweet",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-MPT-Secret",
+              "value": "mpt_sec_8a3f91d04b6c82e7"
+            }
+          ]
+        },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"content\": $json.postText,\n  \"media_url\": $json.mediaUrl,\n  \"platforms\": $json.targetPlatforms\n}",
+        "jsonBody": "={{ JSON.stringify({ tweet_text: $json.tweet_text }) }}",
         "options": {
-          "timeout": 15000
+          "timeout": 60000,
+          "retryOnFail": true,
+          "maxTries": 3,
+          "waitBetweenTries": 3000
         }
       },
       "id": "c1f7b091-a3f2-4e5a-8d19-450f383e2004",
-      "name": "Dispatch to Social Dispatcher",
+      "name": "Post to X Direct via Seeder",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
         720,
         380
-      ],
-      "continueOnFail": true
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "c1f7b091-a3f2-4e5a-8d19-450f383e2005",
+      "name": "Error Trigger Handler",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        200,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const execution = $json.execution || {};\nconst workflow = $json.workflow || {};\nreturn [{\n  json: {\n    error_time: new Date().toISOString(),\n    workflow_name: workflow.name || 'Gryf Autoposter',\n    execution_id: execution.id || 'unknown',\n    error_message: execution.error?.message || 'Unknown error occurred in workflow execution',\n    status: 'dead_letter_logged'\n  }\n}];"
+      },
+      "id": "c1f7b091-a3f2-4e5a-8d19-450f383e2006",
+      "name": "Log Dead Letter Error",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        640
+      ]
     }
   ],
   "connections": {
@@ -99,7 +134,18 @@
       "main": [
         [
           {
-            "node": "Dispatch to Social Dispatcher",
+            "node": "Post to X Direct via Seeder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger Handler": {
+      "main": [
+        [
+          {
+            "node": "Log Dead Letter Error",
             "type": "main",
             "index": 0
           }
